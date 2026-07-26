@@ -1,7 +1,10 @@
 # CLAUDE.md — rakkokeyword-cli
 
-ラッコキーワードAPIのCLI。**バイナリ名は `rakko`**、goreleaser のプロジェクト名も
-`rakko`（リポジトリ名だけ `rakkokeyword-cli`）。
+ラッコキーワードAPIのCLI。**バイナリ名は `rakkokeyword`**、goreleaser のプロジェクト名も
+`rakkokeyword`（リポジトリ名だけ `rakkokeyword-cli`）。
+
+Goパッケージ `internal/rakko` だけは短いまま残してある（パッケージ名は短いのが
+Goの流儀で、利用者からは見えない）。**外に出る名前は例外なく `rakkokeyword`**。
 
 このCLIの本質は2つ。
 
@@ -56,7 +59,7 @@
 
 ## リリース
 
-`PluginVersion`（`cmd/rakko/main.go`）と `plugin.json` の `version` と git タグの
+`PluginVersion`（`cmd/rakkokeyword/main.go`）と `plugin.json` の `version` と git タグの
 3つを揃える。テストとリリースワークフローが不一致を検出する。手順は
 `plugins/rakkokeyword-cli/PUBLISH.md`。
 
@@ -66,11 +69,11 @@
 go generate ./...     # 生成物を作り直す
 git diff --exit-code  # 差分が出たらコミット漏れ
 go test ./...         # SKILL.md 検証とバージョン整合を含む
-go run ./cmd/rakko llm | head
-go run ./cmd/rakko metadata languages   # 無料・APIキー不要の疎通確認
+go run ./cmd/rakkokeyword llm | head
+go run ./cmd/rakkokeyword metadata languages   # 無料・APIキー不要の疎通確認
 ```
 
-APIを叩くテストは `httptest` のスタブに対して行う（`cmd/rakko/cli_test.go`）。
+APIを叩くテストは `httptest` のスタブに対して行う（`cmd/rakkokeyword/cli_test.go`）。
 実APIでの確認は無料エンドポイント（`metadata`）か `--dry-run` を使い、
 有料エンドポイントを検証目的で連打しないこと。
 

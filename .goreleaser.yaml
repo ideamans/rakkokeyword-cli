@@ -1,14 +1,14 @@
 version: 2
 
-project_name: rakko
+project_name: rakkokeyword
 
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - main: ./cmd/rakko
-    binary: rakko
+  - main: ./cmd/rakkokeyword
+    binary: rakkokeyword
     env:
       - CGO_ENABLED=0
     goos:

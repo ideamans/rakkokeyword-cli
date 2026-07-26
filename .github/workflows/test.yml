@@ -41,5 +41,5 @@ jobs:
 
       - name: Verify the llm subcommand renders
         run: |
-          go run ./cmd/rakko llm | head -5
-          go run ./cmd/rakko llm --format json | head -5
+          go run ./cmd/rakkokeyword llm | head -5
+          go run ./cmd/rakkokeyword llm --format json | head -5

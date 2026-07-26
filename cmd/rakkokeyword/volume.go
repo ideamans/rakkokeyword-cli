@@ -18,12 +18,12 @@ var searchVolumeCmd = &cobra.Command{
 		"job: register, poll status, fetch results.\n\n" +
 		"This is the only command that returns freshly measured metrics. Everywhere\n" +
 		"else the metrics ride along with whatever was last cached.\n\n" +
-		"`rakko search-volume register --wait` runs all three steps in one go.",
+		"`rakkokeyword search-volume register --wait` runs all three steps in one go.",
 }
 
 func init() { rootCmd.AddCommand(searchVolumeCmd) }
 
-// ── rakko search-volume register ─────────────────────────────────────────────
+// ── rakkokeyword search-volume register ─────────────────────────────────────────────
 
 var (
 	volumeKeywords    []string
@@ -43,8 +43,8 @@ var volumeRegisterCmd = &cobra.Command{
 	Use:   "register [keyword...]",
 	Short: "Register a batch keyword investigation (0.03 credits/keyword, 0.78 with --seo-difficulty, minimum 15)",
 	Long: "Registers up to 50,000 keywords for investigation and prints the requestId.\n\n" +
-		"Without --wait, follow up with `rakko search-volume status <requestId>` and\n" +
-		"then `rakko search-volume results <requestId>`. With --wait this command\n" +
+		"Without --wait, follow up with `rakkokeyword search-volume status <requestId>` and\n" +
+		"then `rakkokeyword search-volume results <requestId>`. With --wait this command\n" +
 		"polls the status itself and prints the results when they are ready; the\n" +
 		"result-shaping flags (--limit, --sort-by, --filter, --noise-reduction)\n" +
 		"apply to that final fetch.\n\n" +
@@ -53,9 +53,9 @@ var volumeRegisterCmd = &cobra.Command{
 		"unless the difficulty score is what you came for.\n\n" +
 		"Cost: 0.03 credits per keyword, plus 0.75 per keyword with --seo-difficulty.\n" +
 		"A request always costs at least 15 credits, so batching pays.",
-	Example: "  rakko search-volume register ラッコ カワウソ --wait\n" +
-		"  rakko search-volume register --keywords-file keywords.txt --seo-difficulty\n" +
-		"  rakko volume register --keywords-file - --location Japan --language Japanese",
+	Example: "  rakkokeyword search-volume register ラッコ カワウソ --wait\n" +
+		"  rakkokeyword search-volume register --keywords-file keywords.txt --seo-difficulty\n" +
+		"  rakkokeyword volume register --keywords-file - --location Japan --language Japanese",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		keywords, err := collectValues(append(args, volumeKeywords...), volumeFile)
 		if err != nil {
@@ -125,15 +125,15 @@ func init() {
 	f.StringVar(&volumeFile, "keywords-file", "", "File with one keyword per line (- for stdin); up to 50,000")
 	f.BoolVar(&volumeSEO, "seo-difficulty", false, "Also measure SEO difficulty — 25x the cost and up to 60 minutes slower")
 	f.BoolVar(&volumeCompletion, "data-completion", true, "Fill gaps in the volume data (API default: true)")
-	f.StringVar(&volumeLocation, "location", "", "Region name, from `rakko metadata locations` (API default: Japan)")
-	f.StringVar(&volumeLanguage, "language", "", "Language name, from `rakko metadata languages` (API default: Japanese)")
+	f.StringVar(&volumeLocation, "location", "", "Region name, from `rakkokeyword metadata locations` (API default: Japan)")
+	f.StringVar(&volumeLanguage, "language", "", "Language name, from `rakkokeyword metadata languages` (API default: Japanese)")
 	f.BoolVar(&volumeDedupe, "deduplicate", true, "Drop duplicate keywords before charging for them (API default: true)")
 	f.IntVar(&volumeAggregation, "aggregation-period-months", 0, "Trend window in months: 12 / 24 / 36 / 48 (API default: 12)")
 	volumeWait.addTo(volumeRegisterCmd, "; the result flags below then shape the fetched results")
 	addVolumeResultFlags(volumeRegisterCmd)
 }
 
-// ── rakko search-volume results ──────────────────────────────────────────────
+// ── rakkokeyword search-volume results ──────────────────────────────────────────────
 
 // addVolumeResultFlags is shared by `results` and by `register --wait`.
 func addVolumeResultFlags(cmd *cobra.Command) {
@@ -146,12 +146,12 @@ func addVolumeResultFlags(cmd *cobra.Command) {
 var volumeResultsCmd = &cobra.Command{
 	Use:   "results <requestId>",
 	Short: "Fetch the results of a completed batch keyword investigation (free)",
-	Long: "Fetches the data for a requestId from `rakko search-volume register`.\n" +
-		"Check `rakko search-volume status <requestId>` first — results before\n" +
+	Long: "Fetches the data for a requestId from `rakkokeyword search-volume register`.\n" +
+		"Check `rakkokeyword search-volume status <requestId>` first — results before\n" +
 		"completion are partial.\n\n" +
 		"Cost: free.",
-	Example: "  rakko search-volume results 1234567 -n 500 -f csv\n" +
-		"  rakko volume results 1234567 --filter searchVolume.min=100 --sort-by searchVolume",
+	Example: "  rakkokeyword search-volume results 1234567 -n 500 -f csv\n" +
+		"  rakkokeyword volume results 1234567 --filter searchVolume.min=100 --sort-by searchVolume",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return runVolumeResults(cmd, args[0])
@@ -184,7 +184,7 @@ func init() {
 	addVolumeResultFlags(volumeResultsCmd)
 }
 
-// ── rakko search-volume status ───────────────────────────────────────────────
+// ── rakkokeyword search-volume status ───────────────────────────────────────────────
 
 var volumeStatusWait waitFlags
 
@@ -196,8 +196,8 @@ var volumeStatusCmd = &cobra.Command{
 		"noiseReduction is not part of the completion test — isCompleted can be true\n" +
 		"while it is still processing.\n\n" +
 		"Cost: free.",
-	Example: "  rakko search-volume status 1234567\n" +
-		"  rakko search-volume status 1234567 --wait",
+	Example: "  rakkokeyword search-volume status 1234567\n" +
+		"  rakkokeyword search-volume status 1234567 --wait",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		path := "/v1/search-volume/" + args[0] + "/status"
@@ -223,7 +223,7 @@ func init() {
 	volumeStatusWait.addTo(volumeStatusCmd, "")
 }
 
-// ── rakko search-volume histories ────────────────────────────────────────────
+// ── rakkokeyword search-volume histories ────────────────────────────────────────────
 
 var (
 	volumeHistLimit  int
@@ -237,8 +237,8 @@ var volumeHistoriesCmd = &cobra.Command{
 	Long: "Past requests with their requestId, status and keyword summary, newest\n" +
 		"first. Use it to recover a requestId whose results were never fetched.\n\n" +
 		"Cost: free.",
-	Example: "  rakko search-volume histories -n 20\n" +
-		"  rakko volume histories --status processing",
+	Example: "  rakkokeyword search-volume histories -n 20\n" +
+		"  rakkokeyword volume histories --status processing",
 	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		q, err := historiesQuery(cmd, volumeHistLimit, volumeHistOffset, volumeHistStatus)

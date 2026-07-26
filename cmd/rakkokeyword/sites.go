@@ -62,7 +62,7 @@ func (t *targetFlags) addTo(cmd *cobra.Command) {
 	f.StringVar(&t.targetsJSON, "targets-json", "", `Targets as raw JSON, for per-target match types: '[{"url":"https://a/","matchType":"url"}]'`)
 }
 
-// ── rakko influx-keywords ────────────────────────────────────────────────────
+// ── rakkokeyword influx-keywords ────────────────────────────────────────────────────
 
 var (
 	influxKeywordsTargets  targetFlags
@@ -78,11 +78,11 @@ var influxKeywordsCmd = &cobra.Command{
 		"estimated monthly traffic per keyword. Up to 10,000 records.\n\n" +
 		"Run it on a competitor to see what they win on, on your own site to see\n" +
 		"what you win on, and compare the two for the content gap.\n\n" +
-		"Ranks and metrics may be stale; `rakko search-rank register` re-checks\n" +
-		"positions and `rakko search-volume register` refreshes SEO metrics.\n\n" +
+		"Ranks and metrics may be stale; `rakkokeyword search-rank register` re-checks\n" +
+		"positions and `rakkokeyword search-volume register` refreshes SEO metrics.\n\n" +
 		"Cost: 4.5 credits per request.",
-	Example: "  rakko influx-keywords --target https://example.com/ --match-type sub_domain -n 200\n" +
-		"  rakko influx-keywords --target https://example.com/blog/post --match-type url --sort-by rank --order-by asc",
+	Example: "  rakkokeyword influx-keywords --target https://example.com/ --match-type sub_domain -n 200\n" +
+		"  rakkokeyword influx-keywords --target https://example.com/blog/post --match-type url --sort-by rank --order-by asc",
 	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		targets, err := buildTargets(influxKeywordsTargets.urls, influxKeywordsTargets.matchType, influxKeywordsTargets.targetsJSON)
@@ -119,7 +119,7 @@ func init() {
 		"etv", "desc", "1-10000 (API default: 100)", rakko.InfluxKeywordsFilters)
 }
 
-// ── rakko influx-pages ───────────────────────────────────────────────────────
+// ── rakkokeyword influx-pages ───────────────────────────────────────────────────────
 
 var (
 	influxPagesTargets  targetFlags
@@ -131,15 +131,15 @@ var influxPagesCmd = &cobra.Command{
 	Use:     "influx-pages",
 	Aliases: []string{"pages"},
 	Short:   "Pages of a site that earn the most Google traffic (4.5 credits)",
-	Long: "The same data as `rakko influx-keywords` aggregated per page: total\n" +
+	Long: "The same data as `rakkokeyword influx-keywords` aggregated per page: total\n" +
 		"estimated traffic, traffic value in USD, how many keywords the page ranks\n" +
 		"for, and its single best keyword. Up to 10,000 records.\n\n" +
 		"A competitor's top pages show which topics already have proven demand.\n" +
 		"To see everything one of those pages ranks for, feed its URL back into\n" +
-		"`rakko influx-keywords --match-type url`.\n\n" +
+		"`rakkokeyword influx-keywords --match-type url`.\n\n" +
 		"Cost: 4.5 credits per request.",
-	Example: "  rakko influx-pages --target https://example.com/ -n 50\n" +
-		"  rakko influx-pages --target https://example.com/ --filter totalEtv.min=100 -f csv",
+	Example: "  rakkokeyword influx-pages --target https://example.com/ -n 50\n" +
+		"  rakkokeyword influx-pages --target https://example.com/ --filter totalEtv.min=100 -f csv",
 	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		targets, err := buildTargets(influxPagesTargets.urls, influxPagesTargets.matchType, influxPagesTargets.targetsJSON)
@@ -177,7 +177,7 @@ func init() {
 		"totalEtv", "desc", "1-10000 (API default: 100)", rakko.InfluxPagesFilters)
 }
 
-// ── rakko competitive ────────────────────────────────────────────────────────
+// ── rakkokeyword competitive ────────────────────────────────────────────────────────
 
 var competitiveList listFlags
 
@@ -192,8 +192,8 @@ var competitiveCmd = &cobra.Command{
 		"competitorUniqueKeywordCount is the content gap: keywords they have and\n" +
 		"the target does not.\n\n" +
 		"Cost: 4.5 credits per request.",
-	Example: "  rakko competitive https://example.com/\n" +
-		"  rakko competitive https://example.com/ --sort-by duplicateRate -f json",
+	Example: "  rakkokeyword competitive https://example.com/\n" +
+		"  rakkokeyword competitive https://example.com/ --sort-by duplicateRate -f json",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		body := rakko.Body{"url": args[0]}
@@ -223,7 +223,7 @@ func init() {
 		"etv", "desc", "", nil)
 }
 
-// ── rakko bulk-site-research ─────────────────────────────────────────────────
+// ── rakkokeyword bulk-site-research ─────────────────────────────────────────────────
 
 var (
 	bulkSiteURLs      []string
@@ -243,8 +243,8 @@ var bulkSiteCmd = &cobra.Command{
 		"order as the URLs given.\n\n" +
 		"Requires the STANDARD plan or above. At most 100 URLs.\n\n" +
 		"Cost: 0.45 credits per URL, minimum 4.5 credits (10 URLs → 4.5, 100 → 45).",
-	Example: "  rakko bulk-site-research https://a.example/ https://b.example/\n" +
-		"  rakko bulk-site-research --urls-file sites.txt --url-match-type sub_domain -f csv",
+	Example: "  rakkokeyword bulk-site-research https://a.example/ https://b.example/\n" +
+		"  rakkokeyword bulk-site-research --urls-file sites.txt --url-match-type sub_domain -f csv",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		urls, err := collectValues(append(args, bulkSiteURLs...), bulkSiteFile)
 		if err != nil {
@@ -291,7 +291,7 @@ func init() {
 	f.StringVar(&bulkSiteMatchType, "url-match-type", "", "Unit of research: url / forward_url / domain / sub_domain (API default: domain)")
 }
 
-// ── rakko content-search ─────────────────────────────────────────────────────
+// ── rakkokeyword content-search ─────────────────────────────────────────────────────
 
 var (
 	contentList        listFlags
@@ -310,8 +310,8 @@ var contentSearchCmd = &cobra.Command{
 		"content research, and — with --top-keyword-collapse — for surfacing niche\n" +
 		"keywords that weak sites are ranking for unintentionally.\n\n" +
 		"Cost: 4.5 credits per request.",
-	Example: "  rakko content-search ラッコ --search-target title -n 100\n" +
-		"  rakko content ラッコ --top-keyword-collapse --filter estimatedTraffic.min=500",
+	Example: "  rakkokeyword content-search ラッコ --search-target title -n 100\n" +
+		"  rakkokeyword content ラッコ --top-keyword-collapse --filter estimatedTraffic.min=500",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		targets := []string{"title", "keyword", "description", "titleAndKeyword", "titleAndKeywordAndDescription"}
@@ -351,7 +351,7 @@ func init() {
 		"trafficValue", "desc", "1-5000 (API default: 100)", rakko.ContentSearchFilters)
 }
 
-// ── rakko site-search ────────────────────────────────────────────────────────
+// ── rakkokeyword site-search ────────────────────────────────────────────────────────
 
 var siteSearchList listFlags
 
@@ -367,8 +367,8 @@ var siteSearchCmd = &cobra.Command{
 		"so filtering cannot page past the first 100 — narrow the content filter\n" +
 		"instead. A content filter also adds relatedContent metrics to each record.\n\n" +
 		"Cost: 1.5 credits per request.",
-	Example: "  rakko site-search --filter keyword.includes=ラッコ -n 20\n" +
-		"  rakko site-search --filter domain.includes=.jp --filter totalEtv.min=10000 -f json",
+	Example: "  rakkokeyword site-search --filter keyword.includes=ラッコ -n 20\n" +
+		"  rakkokeyword site-search --filter domain.includes=.jp --filter totalEtv.min=10000 -f json",
 	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		body := rakko.Body{}

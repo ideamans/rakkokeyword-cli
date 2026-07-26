@@ -16,7 +16,7 @@ Do not edit by hand — edit the command definitions instead.
 | `--timeout` | duration | `2m0s` | HTTP timeout per request |
 | `--wide` | bool | `false` | Do not truncate long values in table output |
 
-## `rakko auth`
+## `rakkokeyword auth`
 
 Manage the rakkokeyword API key
 
@@ -25,7 +25,7 @@ RAKKOKEYWORD_API_KEY environment variable, then RAKKO_API_KEY, then the
 config file. Keys are issued on the STANDARD plan (up to 5) in the
 rakkokeyword account settings.
 
-### `rakko auth set-api-key`
+### `rakkokeyword auth set-api-key`
 
 Store the API key in the config file
 
@@ -35,22 +35,22 @@ Prefer the RAKKOKEYWORD_API_KEY environment variable on shared machines
 and in CI — it leaves nothing on disk.
 
 ```
-rakko auth set-api-key <api-key>
+rakkokeyword auth set-api-key <api-key>
 ```
 
-### `rakko auth set-format`
+### `rakkokeyword auth set-format`
 
 Store the default output format (table / json / jsonl / csv)
 
 ```
-rakko auth set-format <format>
+rakkokeyword auth set-format <format>
 ```
 
-### `rakko auth status`
+### `rakkokeyword auth status`
 
 Show where the API key comes from and which endpoint it talks to
 
-## `rakko bulk-site-research`
+## `rakkokeyword bulk-site-research`
 
 Traffic, keyword and page scale of up to 100 sites at once (0.45 credits per URL)
 
@@ -67,7 +67,7 @@ Requires the STANDARD plan or above. At most 100 URLs.
 Cost: 0.45 credits per URL, minimum 4.5 credits (10 URLs → 4.5, 100 → 45).
 
 ```
-rakko bulk-site-research [url...]
+rakkokeyword bulk-site-research [url...]
 ```
 
 Aliases: bulk-sites
@@ -75,8 +75,8 @@ Aliases: bulk-sites
 Example:
 
 ```
-rakko bulk-site-research https://a.example/ https://b.example/
-  rakko bulk-site-research --urls-file sites.txt --url-match-type sub_domain -f csv
+rakkokeyword bulk-site-research https://a.example/ https://b.example/
+  rakkokeyword bulk-site-research --urls-file sites.txt --url-match-type sub_domain -f csv
 ```
 
 | flag | type | default | description |
@@ -85,7 +85,7 @@ rakko bulk-site-research https://a.example/ https://b.example/
 | `--url-match-type` | string | — | Unit of research: url / forward_url / domain / sub_domain (API default: domain) |
 | `--urls-file` | string | — | File with one URL per line (- for stdin) |
 
-## `rakko co-occurrence`
+## `rakkokeyword co-occurrence`
 
 Words that recur across the pages ranking for a keyword (3 credits)
 
@@ -104,7 +104,7 @@ smaller.
 Cost: 3 credits per request.
 
 ```
-rakko co-occurrence <keyword>
+rakkokeyword co-occurrence <keyword>
 ```
 
 Aliases: cooc, cooccurrence
@@ -112,8 +112,8 @@ Aliases: cooc, cooccurrence
 Example:
 
 ```
-rakko co-occurrence ラッコ -n 30
-  rakko cooc ラッコ --details=false -f csv
+rakkokeyword co-occurrence ラッコ -n 30
+  rakkokeyword cooc ラッコ --details=false -f csv
 ```
 
 | flag | type | default | description |
@@ -123,7 +123,7 @@ rakko co-occurrence ラッコ -n 30
 | `--order-by` | string | — | Sort order: asc / desc (API default: desc) |
 | `--sort-by` | string | — | Sort field: word / occurrencePageCount / occurrenceTitleCount / occurrenceHeadingCount / siteCountTotal / siteCountHeading (API default: siteCountTotal) |
 
-## `rakko competitive`
+## `rakkokeyword competitive`
 
 Sites whose ranking keywords overlap with a given site (4.5 credits)
 
@@ -138,7 +138,7 @@ the target does not.
 Cost: 4.5 credits per request.
 
 ```
-rakko competitive <url>
+rakkokeyword competitive <url>
 ```
 
 Aliases: competitors
@@ -146,8 +146,8 @@ Aliases: competitors
 Example:
 
 ```
-rakko competitive https://example.com/
-  rakko competitive https://example.com/ --sort-by duplicateRate -f json
+rakkokeyword competitive https://example.com/
+  rakkokeyword competitive https://example.com/ --sort-by duplicateRate -f json
 ```
 
 | flag | type | default | description |
@@ -155,7 +155,7 @@ rakko competitive https://example.com/
 | `--order-by` | string | — | Sort order: asc / desc (API default: desc) |
 | `--sort-by` | string | — | Sort field: duplicate / duplicateRate / competitorUnique / targetUnique / etv / keywordCount / trafficValue / pageCount (API default: etv) |
 
-## `rakko content-search`
+## `rakkokeyword content-search`
 
 Pages whose title, description or top keywords match a keyword (4.5 credits)
 
@@ -169,7 +169,7 @@ keywords that weak sites are ranking for unintentionally.
 Cost: 4.5 credits per request.
 
 ```
-rakko content-search <keyword>
+rakkokeyword content-search <keyword>
 ```
 
 Aliases: content
@@ -177,8 +177,8 @@ Aliases: content
 Example:
 
 ```
-rakko content-search ラッコ --search-target title -n 100
-  rakko content ラッコ --top-keyword-collapse --filter estimatedTraffic.min=500
+rakkokeyword content-search ラッコ --search-target title -n 100
+  rakkokeyword content ラッコ --top-keyword-collapse --filter estimatedTraffic.min=500
 ```
 
 | flag | type | default | description |
@@ -192,7 +192,7 @@ rakko content-search ラッコ --search-target title -n 100
 | `--sort-by` | string | — | Sort field: estimatedTraffic / trafficValue / rankingKeywordCount (API default: trafficValue) |
 | `--top-keyword-collapse` | bool | `false` | Keep only one page per top keyword |
 
-## `rakko headline`
+## `rakkokeyword headline`
 
 Headings (h1-h6) of the pages ranking for a keyword (3 credits)
 
@@ -201,14 +201,14 @@ page's character and heading count and the averages across them.
 
 Topics that recur across the top pages are the ones Google's users are
 assumed to need covered, which makes this the step before drafting a title
-and outline. Pair it with `rakko co-occurrence` for the vocabulary.
+and outline. Pair it with `rakkokeyword co-occurrence` for the vocabulary.
 
 Only h1-h4 are collected by default; add --h5 --h6 for the rest.
 
 Cost: 3 credits per request.
 
 ```
-rakko headline <keyword>
+rakkokeyword headline <keyword>
 ```
 
 Aliases: headlines
@@ -216,8 +216,8 @@ Aliases: headlines
 Example:
 
 ```
-rakko headline ラッコ
-  rakko headline ラッコ --less-characters -f json | jq '.data.items[].headlines'
+rakkokeyword headline ラッコ
+  rakkokeyword headline ラッコ --less-characters -f json | jq '.data.items[].headlines'
 ```
 
 | flag | type | default | description |
@@ -234,7 +234,7 @@ rakko headline ラッコ
 | `--order-by` | string | — | Sort order: asc / desc (API default: asc) |
 | `--sort-by` | string | — | Sort field: position / title / headlineCount / wordCount (API default: position) |
 
-## `rakko influx-keywords`
+## `rakkokeyword influx-keywords`
 
 Keywords a site or page already earns Google traffic from (4.5 credits)
 
@@ -244,8 +244,8 @@ estimated monthly traffic per keyword. Up to 10,000 records.
 Run it on a competitor to see what they win on, on your own site to see
 what you win on, and compare the two for the content gap.
 
-Ranks and metrics may be stale; `rakko search-rank register` re-checks
-positions and `rakko search-volume register` refreshes SEO metrics.
+Ranks and metrics may be stale; `rakkokeyword search-rank register` re-checks
+positions and `rakkokeyword search-volume register` refreshes SEO metrics.
 
 Cost: 4.5 credits per request.
 
@@ -254,8 +254,8 @@ Aliases: influx-kw
 Example:
 
 ```
-rakko influx-keywords --target https://example.com/ --match-type sub_domain -n 200
-  rakko influx-keywords --target https://example.com/blog/post --match-type url --sort-by rank --order-by asc
+rakkokeyword influx-keywords --target https://example.com/ --match-type sub_domain -n 200
+  rakkokeyword influx-keywords --target https://example.com/blog/post --match-type url --sort-by rank --order-by asc
 ```
 
 | flag | type | default | description |
@@ -270,17 +270,17 @@ rakko influx-keywords --target https://example.com/ --match-type sub_domain -n 2
 | `--target` | stringArray | `[]` | Domain or URL to investigate; repeat for up to 20 targets |
 | `--targets-json` | string | — | Targets as raw JSON, for per-target match types: '[{"url":"https://a/","matchType":"url"}]' |
 
-## `rakko influx-pages`
+## `rakkokeyword influx-pages`
 
 Pages of a site that earn the most Google traffic (4.5 credits)
 
-The same data as `rakko influx-keywords` aggregated per page: total
+The same data as `rakkokeyword influx-keywords` aggregated per page: total
 estimated traffic, traffic value in USD, how many keywords the page ranks
 for, and its single best keyword. Up to 10,000 records.
 
 A competitor's top pages show which topics already have proven demand.
 To see everything one of those pages ranks for, feed its URL back into
-`rakko influx-keywords --match-type url`.
+`rakkokeyword influx-keywords --match-type url`.
 
 Cost: 4.5 credits per request.
 
@@ -289,8 +289,8 @@ Aliases: pages
 Example:
 
 ```
-rakko influx-pages --target https://example.com/ -n 50
-  rakko influx-pages --target https://example.com/ --filter totalEtv.min=100 -f csv
+rakkokeyword influx-pages --target https://example.com/ -n 50
+  rakkokeyword influx-pages --target https://example.com/ --filter totalEtv.min=100 -f csv
 ```
 
 | flag | type | default | description |
@@ -305,26 +305,26 @@ rakko influx-pages --target https://example.com/ -n 50
 | `--targets-json` | string | — | Targets as raw JSON, for per-target match types: '[{"url":"https://a/","matchType":"url"}]' |
 | `--top-keyword-collapse` | bool | `false` | Collapse pages that share the same top keyword |
 
-## `rakko metadata`
+## `rakkokeyword metadata`
 
 Region and language names accepted by --location and --language (free)
 
-### `rakko metadata languages`
+### `rakkokeyword metadata languages`
 
 List language names for --language (free, no API key needed)
 
-The language names `rakko search-volume register --language` and
-`rakko search-rank register --language` accept. Use the value verbatim
+The language names `rakkokeyword search-volume register --language` and
+`rakkokeyword search-rank register --language` accept. Use the value verbatim
 (e.g. Japanese).
 
 Cost: free. This endpoint needs no API key.
 
-### `rakko metadata locations`
+### `rakkokeyword metadata locations`
 
 List region names for --location (free, no API key needed)
 
-The region names `rakko search-volume register --location` and
-`rakko search-rank register --location` accept.
+The region names `rakkokeyword search-volume register --location` and
+`rakkokeyword search-rank register --location` accept.
 
 Unfiltered the list is country-level only. Give --location-name or
 --country-code and city-level regions appear too; those are written as
@@ -336,8 +336,8 @@ Cost: free. This endpoint needs no API key.
 Example:
 
 ```
-rakko metadata locations --country-code JP
-  rakko metadata locations --location-name Tokyo
+rakkokeyword metadata locations --country-code JP
+  rakkokeyword metadata locations --location-name Tokyo
 ```
 
 | flag | type | default | description |
@@ -346,7 +346,7 @@ rakko metadata locations --country-code JP
 | `-n`, `--limit` | int | `0` | Maximum records to return (API default: all) |
 | `--location-name` | string | — | Filter by region name (substring, case-insensitive); also reveals city-level regions |
 
-## `rakko other-keywords`
+## `rakkokeyword other-keywords`
 
 LSI keywords and People-Also-Ask questions, recursively (22.5 credits)
 
@@ -362,7 +362,7 @@ This is the most expensive per-request command in the CLI.
 Cost: 22.5 credits per request.
 
 ```
-rakko other-keywords <keyword>
+rakkokeyword other-keywords <keyword>
 ```
 
 Aliases: other, lsi, paa
@@ -370,8 +370,8 @@ Aliases: other, lsi, paa
 Example:
 
 ```
-rakko other-keywords ラッコ
-  rakko other ラッコ -f json | jq '.data.items[] | select(.type=="paa")'
+rakkokeyword other-keywords ラッコ
+  rakkokeyword other ラッコ -f json | jq '.data.items[] | select(.type=="paa")'
 ```
 
 | flag | type | default | description |
@@ -379,7 +379,7 @@ rakko other-keywords ラッコ
 | `--order-by` | string | — | Sort order: asc / desc (API default: desc) |
 | `--sort-by` | string | — | Sort field: importance / seoDifficulty / searchVolume / cpc / competition / firstSeenRange (API default: importance) |
 
-## `rakko question-search`
+## `rakkokeyword question-search`
 
 Frequently asked questions containing a keyword, by frequency (3 credits)
 
@@ -389,12 +389,12 @@ by how often they occur. Up to 200 records.
 Useful for FAQ and Q&A content, and for AIO / GEO / LLMO work: these are
 the phrasings people are likely to type into an AI assistant.
 
-For the questions Google itself shows on a SERP, use `rakko other-keywords`.
+For the questions Google itself shows on a SERP, use `rakkokeyword other-keywords`.
 
 Cost: 3 credits per request.
 
 ```
-rakko question-search <keyword>
+rakkokeyword question-search <keyword>
 ```
 
 Aliases: questions
@@ -402,15 +402,15 @@ Aliases: questions
 Example:
 
 ```
-rakko question-search ラッコ -n 50
-  rakko questions ラッコ -f jsonl
+rakkokeyword question-search ラッコ -n 50
+  rakkokeyword questions ラッコ -f jsonl
 ```
 
 | flag | type | default | description |
 | --- | --- | --- | --- |
 | `-n`, `--limit` | int | `0` | Maximum questions to return, 1-200 (API default: 100) |
 
-## `rakko ranking-keywords`
+## `rakkokeyword ranking-keywords`
 
 Keywords the pages ranking for this keyword also rank for (4.5 credits)
 
@@ -427,7 +427,7 @@ discover keywords further afield.
 Cost: 4.5 credits per request.
 
 ```
-rakko ranking-keywords <keyword>
+rakkokeyword ranking-keywords <keyword>
 ```
 
 Aliases: ranking, co-ranking
@@ -435,8 +435,8 @@ Aliases: ranking, co-ranking
 Example:
 
 ```
-rakko ranking-keywords ラッコ --search-top 10 --search-range 20
-  rakko ranking ラッコ --filter relevance.min=50 -n 200
+rakkokeyword ranking-keywords ラッコ --search-top 10 --search-range 20
+  rakkokeyword ranking ラッコ --filter relevance.min=50 -n 200
 ```
 
 | flag | type | default | description |
@@ -449,7 +449,7 @@ rakko ranking-keywords ラッコ --search-top 10 --search-range 20
 | `--search-top` | int | `0` | How many top-ranking pages to inspect: 3 / 5 / 10 / 20 / 30 / 50 (API default: 20) |
 | `--sort-by` | string | — | Sort field: seoDifficulty / searchVolume / cpc / competition / relevance (API default: relevance) |
 
-## `rakko raw`
+## `rakkokeyword raw`
 
 Call any API endpoint directly with a JSON body (cost: whatever that endpoint costs)
 
@@ -462,19 +462,19 @@ Authentication, retries, timeouts and output formatting work as they do
 everywhere else.
 
 It charges the same credits as the endpoint it calls; --dry-run still shows
-the request without sending it. The endpoint list is in `rakko llm` and at
+the request without sending it. The endpoint list is in `rakkokeyword llm` and at
 https://api.rakkokeyword.com/api-docs.json.
 
 ```
-rakko raw <METHOD> <path>
+rakkokeyword raw <METHOD> <path>
 ```
 
 Example:
 
 ```
-rakko raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'
-  rakko raw GET /v1/metadata/locations --query countryCode=JP
-  rakko raw POST /v1/co-occurrence --data @body.json --items data.items -f csv
+rakkokeyword raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'
+  rakkokeyword raw GET /v1/metadata/locations --query countryCode=JP
+  rakkokeyword raw POST /v1/co-occurrence --data @body.json --items data.items -f csv
 ```
 
 | flag | type | default | description |
@@ -483,20 +483,20 @@ rakko raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["goo
 | `--items` | string | `data.items` | Dotted path to the array to tabulate for table, csv and jsonl output |
 | `--query` | stringArray | `[]` | Query parameter as key=value; repeatable |
 
-## `rakko related-keywords`
+## `rakkokeyword related-keywords`
 
-Keywords from the rakko database matching a keyword, up to 25,000 (1.5 credits)
+Keywords from the rakkokeyword database matching a keyword, up to 25,000 (1.5 credits)
 
 Bulk keyword harvesting: every keyword in the rakkokeyword database that
 matches the given one, with SEO metrics, up to 25,000 records.
 
-Reach for `rakko suggest-keywords` first — it reflects real search-engine
+Reach for `rakkokeyword suggest-keywords` first — it reflects real search-engine
 suggestions. Use this when you need volume beyond what suggestions give.
 
 Cost: 1.5 credits per request.
 
 ```
-rakko related-keywords <keyword>
+rakkokeyword related-keywords <keyword>
 ```
 
 Aliases: related
@@ -504,8 +504,8 @@ Aliases: related
 Example:
 
 ```
-rakko related-keywords ラッコ --match-type phraseMatch -n 1000
-  rakko related ラッコ --filter keyword.notIncludes=グッズ -f csv > keywords.csv
+rakkokeyword related-keywords ラッコ --match-type phraseMatch -n 1000
+  rakkokeyword related ラッコ --filter keyword.notIncludes=グッズ -f csv > keywords.csv
 ```
 
 | flag | type | default | description |
@@ -517,21 +517,21 @@ rakko related-keywords ラッコ --match-type phraseMatch -n 1000
 | `--order-by` | string | — | Sort order: asc / desc (API default: desc) |
 | `--sort-by` | string | — | Sort field: seoDifficulty / searchVolume / cpc / competition / firstSeenRange (API default: searchVolume) |
 
-## `rakko search-rank`
+## `rakkokeyword search-rank`
 
 Check live Google rankings of URLs for a list of keywords
 
 Measures where URLs or domains currently rank in Google for given keywords,
 as an asynchronous job: register, poll status, fetch results.
 
-Unlike the ranks bundled with `rakko influx-keywords`, these are freshly
+Unlike the ranks bundled with `rakkokeyword influx-keywords`, these are freshly
 fetched SERPs for the region, language, device and OS you specify.
 
-`rakko search-rank register --wait` runs all three steps in one go.
+`rakkokeyword search-rank register --wait` runs all three steps in one go.
 
 Aliases: rank
 
-### `rakko search-rank histories`
+### `rakkokeyword search-rank histories`
 
 List past rank checks, newest first (free)
 
@@ -543,7 +543,7 @@ Cost: free.
 Example:
 
 ```
-rakko search-rank histories -n 20 --status completed
+rakkokeyword search-rank histories -n 20 --status completed
 ```
 
 | flag | type | default | description |
@@ -552,7 +552,7 @@ rakko search-rank histories -n 20 --status completed
 | `--offset` | int | `0` | Records to skip (offset + limit must not exceed 50,000) |
 | `--status` | string | — | Filter by status: completed / processing (API default: all) |
 
-### `rakko search-rank register`
+### `rakkokeyword search-rank register`
 
 Register a rank check for keywords against URLs (0.9 credits/keyword for ranks 1-30)
 
@@ -560,8 +560,8 @@ Registers a rank check and prints the requestId. Every keyword is checked
 against every URL, so 10 keywords and 3 URLs is one job covering 30 pairs —
 but the cost is per keyword, not per pair.
 
-Without --wait, follow up with `rakko search-rank status <requestId>` and
-then `rakko search-rank results <requestId>`. With --wait this command
+Without --wait, follow up with `rakkokeyword search-rank status <requestId>` and
+then `rakkokeyword search-rank results <requestId>`. With --wait this command
 polls and prints the results itself.
 
 Timing: up to 10 keywords usually finishes in minutes, larger jobs within
@@ -569,17 +569,17 @@ about an hour, and a busy queue can take longer.
 
 Cost: 0.9 credits per keyword for ranks 1-30, plus 0.3 per keyword for each
 additional 10 ranks of --depth. --search-volume adds the metrics of
-`rakko search-volume` on top.
+`rakkokeyword search-volume` on top.
 
 ```
-rakko search-rank register [keyword...]
+rakkokeyword search-rank register [keyword...]
 ```
 
 Example:
 
 ```
-rakko search-rank register ラッコ カワウソ --url https://example.com/ --wait
-  rakko search-rank register --keywords-file kw.txt --url https://example.com/ --depth 100 --device mobile
+rakkokeyword search-rank register ラッコ カワウソ --url https://example.com/ --wait
+  rakkokeyword search-rank register --keywords-file kw.txt --url https://example.com/ --depth 100 --device mobile
 ```
 
 | flag | type | default | description |
@@ -591,9 +591,9 @@ rakko search-rank register ラッコ カワウソ --url https://example.com/ --w
 | `--filter-json` | string | — | Filter object as raw JSON, merged over --filter (escape hatch for anything --filter cannot express) |
 | `--keyword` | stringArray | `[]` | Keyword to check; repeat, or pass keywords as arguments |
 | `--keywords-file` | string | — | File with one keyword per line (- for stdin) |
-| `--language` | string | — | Language name for the SERP, from `rakko metadata languages` (API default: Japanese) |
+| `--language` | string | — | Language name for the SERP, from `rakkokeyword metadata languages` (API default: Japanese) |
 | `-n`, `--limit` | int | `0` | Maximum records to return, any positive integer (API default: 100) |
-| `--location` | string | — | Region name for the SERP, from `rakko metadata locations` (API default: Japan) |
+| `--location` | string | — | Region name for the SERP, from `rakkokeyword metadata locations` (API default: Japan) |
 | `--match-type` | string | — | How a result counts as a hit: url / forward_url / domain / sub_domain (API default: sub_domain) |
 | `--order-by` | string | — | Sort order: asc / desc (API default: desc) |
 | `--os` | string | — | OS to emulate: windows / macos (desktop) or android / ios (mobile) |
@@ -606,11 +606,11 @@ rakko search-rank register ラッコ カワウソ --url https://example.com/ --w
 | `--wait-timeout` | duration | `1h0m0s` | Give up waiting after this long; the job keeps running and can be fetched later by requestId |
 | `--with-aggregation` | bool | `false` | Include per-target totals (estimated traffic, rank distribution) in the summary |
 
-### `rakko search-rank results`
+### `rakkokeyword search-rank results`
 
 Fetch the results of a completed rank check (free)
 
-Fetches the ranks for a requestId from `rakko search-rank register`.
+Fetches the ranks for a requestId from `rakkokeyword search-rank register`.
 
 Each item carries a rankings array with one entry per target URL. A null
 position means the URL was not found within --depth — that is "not in the
@@ -620,14 +620,14 @@ use -f json or --fields to work with it properly.
 Cost: free.
 
 ```
-rakko search-rank results <requestId>
+rakkokeyword search-rank results <requestId>
 ```
 
 Example:
 
 ```
-rakko search-rank results 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4
-  rakko search-rank results 01HQZX… --with-aggregation -f json
+rakkokeyword search-rank results 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4
+  rakkokeyword search-rank results 01HQZX… --with-aggregation -f json
 ```
 
 | flag | type | default | description |
@@ -639,7 +639,7 @@ rakko search-rank results 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4
 | `--sort-by` | string | — | Sort field: keyword / seoDifficulty / searchVolume (API default: searchVolume) |
 | `--with-aggregation` | bool | `false` | Include per-target totals (estimated traffic, rank distribution) in the summary |
 
-### `rakko search-rank status`
+### `rakkokeyword search-rank status`
 
 Check whether a rank check has finished (free)
 
@@ -652,13 +652,13 @@ isCompleted false — the SERP ranks may still be fetchable.
 Cost: free.
 
 ```
-rakko search-rank status <requestId>
+rakkokeyword search-rank status <requestId>
 ```
 
 Example:
 
 ```
-rakko search-rank status 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4 --wait
+rakkokeyword search-rank status 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4 --wait
 ```
 
 | flag | type | default | description |
@@ -667,7 +667,7 @@ rakko search-rank status 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4 --wait
 | `--wait` | bool | `false` | Poll until the job completes |
 | `--wait-timeout` | duration | `1h0m0s` | Give up waiting after this long; the job keeps running and can be fetched later by requestId |
 
-## `rakko search-volume`
+## `rakkokeyword search-volume`
 
 Batch keyword metrics: fresh search volume, SEO difficulty, CPC, trends
 
@@ -678,11 +678,11 @@ job: register, poll status, fetch results.
 This is the only command that returns freshly measured metrics. Everywhere
 else the metrics ride along with whatever was last cached.
 
-`rakko search-volume register --wait` runs all three steps in one go.
+`rakkokeyword search-volume register --wait` runs all three steps in one go.
 
 Aliases: volume
 
-### `rakko search-volume histories`
+### `rakkokeyword search-volume histories`
 
 List past batch keyword investigations, newest first (free)
 
@@ -694,8 +694,8 @@ Cost: free.
 Example:
 
 ```
-rakko search-volume histories -n 20
-  rakko volume histories --status processing
+rakkokeyword search-volume histories -n 20
+  rakkokeyword volume histories --status processing
 ```
 
 | flag | type | default | description |
@@ -704,14 +704,14 @@ rakko search-volume histories -n 20
 | `--offset` | int | `0` | Records to skip (offset + limit must not exceed 50,000) |
 | `--status` | string | — | Filter by status: completed / processing (API default: all) |
 
-### `rakko search-volume register`
+### `rakkokeyword search-volume register`
 
 Register a batch keyword investigation (0.03 credits/keyword, 0.78 with --seo-difficulty, minimum 15)
 
 Registers up to 50,000 keywords for investigation and prints the requestId.
 
-Without --wait, follow up with `rakko search-volume status <requestId>` and
-then `rakko search-volume results <requestId>`. With --wait this command
+Without --wait, follow up with `rakkokeyword search-volume status <requestId>` and
+then `rakkokeyword search-volume results <requestId>`. With --wait this command
 polls the status itself and prints the results when they are ready; the
 result-shaping flags (--limit, --sort-by, --filter, --noise-reduction)
 apply to that final fetch.
@@ -724,15 +724,15 @@ Cost: 0.03 credits per keyword, plus 0.75 per keyword with --seo-difficulty.
 A request always costs at least 15 credits, so batching pays.
 
 ```
-rakko search-volume register [keyword...]
+rakkokeyword search-volume register [keyword...]
 ```
 
 Example:
 
 ```
-rakko search-volume register ラッコ カワウソ --wait
-  rakko search-volume register --keywords-file keywords.txt --seo-difficulty
-  rakko volume register --keywords-file - --location Japan --language Japanese
+rakkokeyword search-volume register ラッコ カワウソ --wait
+  rakkokeyword search-volume register --keywords-file keywords.txt --seo-difficulty
+  rakkokeyword volume register --keywords-file - --location Japan --language Japanese
 ```
 
 | flag | type | default | description |
@@ -744,9 +744,9 @@ rakko search-volume register ラッコ カワウソ --wait
 | `--filter-json` | string | — | Filter object as raw JSON, merged over --filter (escape hatch for anything --filter cannot express) |
 | `--keyword` | stringArray | `[]` | Keyword to investigate; repeat, or pass keywords as arguments |
 | `--keywords-file` | string | — | File with one keyword per line (- for stdin); up to 50,000 |
-| `--language` | string | — | Language name, from `rakko metadata languages` (API default: Japanese) |
+| `--language` | string | — | Language name, from `rakkokeyword metadata languages` (API default: Japanese) |
 | `-n`, `--limit` | int | `0` | Maximum records to return, 1-50000 (API default: 100) |
-| `--location` | string | — | Region name, from `rakko metadata locations` (API default: Japan) |
+| `--location` | string | — | Region name, from `rakkokeyword metadata locations` (API default: Japan) |
 | `--noise-reduction` | bool | `true` | Apply noise reduction to the result set (API default: true) |
 | `--order-by` | string | — | Sort order: asc / desc (API default: desc) |
 | `--poll-interval` | duration | `30s` | How often to poll while waiting (the API recommends 30s) |
@@ -755,25 +755,25 @@ rakko search-volume register ラッコ カワウソ --wait
 | `--wait` | bool | `false` | Poll until the job completes; the result flags below then shape the fetched results |
 | `--wait-timeout` | duration | `1h0m0s` | Give up waiting after this long; the job keeps running and can be fetched later by requestId |
 
-### `rakko search-volume results`
+### `rakkokeyword search-volume results`
 
 Fetch the results of a completed batch keyword investigation (free)
 
-Fetches the data for a requestId from `rakko search-volume register`.
-Check `rakko search-volume status <requestId>` first — results before
+Fetches the data for a requestId from `rakkokeyword search-volume register`.
+Check `rakkokeyword search-volume status <requestId>` first — results before
 completion are partial.
 
 Cost: free.
 
 ```
-rakko search-volume results <requestId>
+rakkokeyword search-volume results <requestId>
 ```
 
 Example:
 
 ```
-rakko search-volume results 1234567 -n 500 -f csv
-  rakko volume results 1234567 --filter searchVolume.min=100 --sort-by searchVolume
+rakkokeyword search-volume results 1234567 -n 500 -f csv
+  rakkokeyword volume results 1234567 --filter searchVolume.min=100 --sort-by searchVolume
 ```
 
 | flag | type | default | description |
@@ -785,7 +785,7 @@ rakko search-volume results 1234567 -n 500 -f csv
 | `--order-by` | string | — | Sort order: asc / desc (API default: desc) |
 | `--sort-by` | string | — | Sort field: keyword / seoDifficulty / searchVolume / rateOfChange / cpc / competition / firstSeenRange (API default: searchVolume) |
 
-### `rakko search-volume status`
+### `rakkokeyword search-volume status`
 
 Check whether a batch keyword investigation has finished (free)
 
@@ -798,14 +798,14 @@ while it is still processing.
 Cost: free.
 
 ```
-rakko search-volume status <requestId>
+rakkokeyword search-volume status <requestId>
 ```
 
 Example:
 
 ```
-rakko search-volume status 1234567
-  rakko search-volume status 1234567 --wait
+rakkokeyword search-volume status 1234567
+  rakkokeyword search-volume status 1234567 --wait
 ```
 
 | flag | type | default | description |
@@ -814,7 +814,7 @@ rakko search-volume status 1234567
 | `--wait` | bool | `false` | Poll until the job completes |
 | `--wait-timeout` | duration | `1h0m0s` | Give up waiting after this long; the job keeps running and can be fetched later by requestId |
 
-## `rakko site-search`
+## `rakkokeyword site-search`
 
 Find sites by content, domain or SEO scale (1.5 credits)
 
@@ -834,8 +834,8 @@ Aliases: sites
 Example:
 
 ```
-rakko site-search --filter keyword.includes=ラッコ -n 20
-  rakko site-search --filter domain.includes=.jp --filter totalEtv.min=10000 -f json
+rakkokeyword site-search --filter keyword.includes=ラッコ -n 20
+  rakkokeyword site-search --filter domain.includes=.jp --filter totalEtv.min=10000 -f json
 ```
 
 | flag | type | default | description |
@@ -844,7 +844,7 @@ rakko site-search --filter keyword.includes=ラッコ -n 20
 | `--filter-json` | string | — | Filter object as raw JSON, merged over --filter (escape hatch for anything --filter cannot express) |
 | `-n`, `--limit` | int | `0` | Maximum records to return, 1-100 (API default: 100) |
 
-## `rakko suggest-keywords`
+## `rakkokeyword suggest-keywords`
 
 Search-engine suggestions for a keyword, with SEO metrics (1.5 credits)
 
@@ -857,12 +857,12 @@ queries real users type. About 1,000 suggestions are available normally and
 about 10,000 with --increase-keyword.
 
 The attached SEO metrics may be stale. When they matter, feed the keywords
-into `rakko search-volume register` for fresh figures.
+into `rakkokeyword search-volume register` for fresh figures.
 
 Cost: 1.5 credits per request.
 
 ```
-rakko suggest-keywords <keyword>
+rakkokeyword suggest-keywords <keyword>
 ```
 
 Aliases: suggest
@@ -870,8 +870,8 @@ Aliases: suggest
 Example:
 
 ```
-rakko suggest-keywords ラッコ --modes google,bing -n 50
-  rakko suggest ラッコ --increase-keyword --filter searchVolume.min=100 -f json
+rakkokeyword suggest-keywords ラッコ --modes google,bing -n 50
+  rakkokeyword suggest ラッコ --increase-keyword --filter searchVolume.min=100 -f json
 ```
 
 | flag | type | default | description |

@@ -7,7 +7,7 @@ import (
 	"github.com/ideamans/rakkokeyword-cli/internal/llmdocs"
 )
 
-// llmConfig describes the `rakko llm` subcommand.
+// llmConfig describes the `rakkokeyword llm` subcommand.
 func llmConfig() llmcmd.Config {
 	return llmcmd.Config{Docs: llmdocs.Docs()}
 }
@@ -15,7 +15,7 @@ func llmConfig() llmcmd.Config {
 func init() {
 	llmcmd.AddTo(rootCmd, llmConfig())
 
-	// Bare `rakko` (no subcommand) prints standard help instead of erroring.
+	// Bare `rakkokeyword` (no subcommand) prints standard help instead of erroring.
 	rootCmd.RunE = func(cmd *cobra.Command, _ []string) error {
 		return cmd.Help()
 	}

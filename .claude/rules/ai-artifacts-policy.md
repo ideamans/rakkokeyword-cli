@@ -2,7 +2,7 @@
 
 | Generated file | Source of truth |
 | --- | --- |
-| `internal/llmdocs/90-commands.md` | the cobra command definitions in `cmd/rakko/*.go`, rendered by the hidden `gen-llmdocs` command |
+| `internal/llmdocs/90-commands.md` | the cobra command definitions in `cmd/rakkokeyword/*.go`, rendered by the hidden `gen-llmdocs` command |
 
 Hand-written and safe to edit:
 

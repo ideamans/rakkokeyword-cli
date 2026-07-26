@@ -34,7 +34,7 @@ var authStatusCmd = &cobra.Command{
 		key := cfg.APIKeyResolved(flagAPIKey)
 		if key == "" {
 			fmt.Fprintln(out, "API key     : (not set)")
-			fmt.Fprintf(out, "              set %s, pass --api-key, or run `rakko auth set-api-key <key>`\n", config.EnvAPIKey)
+			fmt.Fprintf(out, "              set %s, pass --api-key, or run `rakkokeyword auth set-api-key <key>`\n", config.EnvAPIKey)
 			return nil
 		}
 		fmt.Fprintf(out, "API key     : %s (from %s)\n", maskKey(key), cfg.APIKeySource(flagAPIKey))

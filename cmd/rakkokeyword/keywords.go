@@ -20,7 +20,7 @@ var seoColumns = []string{
 	"metrics.firstSeenRange",
 }
 
-// ── rakko suggest-keywords ───────────────────────────────────────────────────
+// ── rakkokeyword suggest-keywords ───────────────────────────────────────────────────
 
 var suggestModes = []string{
 	"google", "bing", "youtube", "googleVideo", "amazon", "rakuten", "googleShopping", "googleImage",
@@ -43,10 +43,10 @@ var suggestCmd = &cobra.Command{
 		"queries real users type. About 1,000 suggestions are available normally and\n" +
 		"about 10,000 with --increase-keyword.\n\n" +
 		"The attached SEO metrics may be stale. When they matter, feed the keywords\n" +
-		"into `rakko search-volume register` for fresh figures.\n\n" +
+		"into `rakkokeyword search-volume register` for fresh figures.\n\n" +
 		"Cost: 1.5 credits per request.",
-	Example: "  rakko suggest-keywords ラッコ --modes google,bing -n 50\n" +
-		"  rakko suggest ラッコ --increase-keyword --filter searchVolume.min=100 -f json",
+	Example: "  rakkokeyword suggest-keywords ラッコ --modes google,bing -n 50\n" +
+		"  rakkokeyword suggest ラッコ --increase-keyword --filter searchVolume.min=100 -f json",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := rakko.EnumList("modes", suggestModeList, suggestModes); err != nil {
@@ -81,7 +81,7 @@ func init() {
 		"searchVolume", "desc", "any positive integer (API default: all results)", rakko.SuggestFilters)
 }
 
-// ── rakko related-keywords ───────────────────────────────────────────────────
+// ── rakkokeyword related-keywords ───────────────────────────────────────────────────
 
 var (
 	relatedList      listFlags
@@ -91,14 +91,14 @@ var (
 var relatedCmd = &cobra.Command{
 	Use:     "related-keywords <keyword>",
 	Aliases: []string{"related"},
-	Short:   "Keywords from the rakko database matching a keyword, up to 25,000 (1.5 credits)",
+	Short:   "Keywords from the rakkokeyword database matching a keyword, up to 25,000 (1.5 credits)",
 	Long: "Bulk keyword harvesting: every keyword in the rakkokeyword database that\n" +
 		"matches the given one, with SEO metrics, up to 25,000 records.\n\n" +
-		"Reach for `rakko suggest-keywords` first — it reflects real search-engine\n" +
+		"Reach for `rakkokeyword suggest-keywords` first — it reflects real search-engine\n" +
 		"suggestions. Use this when you need volume beyond what suggestions give.\n\n" +
 		"Cost: 1.5 credits per request.",
-	Example: "  rakko related-keywords ラッコ --match-type phraseMatch -n 1000\n" +
-		"  rakko related ラッコ --filter keyword.notIncludes=グッズ -f csv > keywords.csv",
+	Example: "  rakkokeyword related-keywords ラッコ --match-type phraseMatch -n 1000\n" +
+		"  rakkokeyword related ラッコ --filter keyword.notIncludes=グッズ -f csv > keywords.csv",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		matchTypes := []string{"partialMatch", "phraseMatch", "prefixMatch", "suffixMatch", "wordMatch"}
@@ -131,7 +131,7 @@ func init() {
 		"searchVolume", "desc", "1-25000 (API default: 1000)", rakko.RelatedFilters)
 }
 
-// ── rakko other-keywords ─────────────────────────────────────────────────────
+// ── rakkokeyword other-keywords ─────────────────────────────────────────────────────
 
 var otherList listFlags
 
@@ -146,8 +146,8 @@ var otherCmd = &cobra.Command{
 		"reappeared during the recursion — high means Google surfaces it broadly.\n\n" +
 		"This is the most expensive per-request command in the CLI.\n\n" +
 		"Cost: 22.5 credits per request.",
-	Example: "  rakko other-keywords ラッコ\n" +
-		"  rakko other ラッコ -f json | jq '.data.items[] | select(.type==\"paa\")'",
+	Example: "  rakkokeyword other-keywords ラッコ\n" +
+		"  rakkokeyword other ラッコ -f json | jq '.data.items[] | select(.type==\"paa\")'",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		body := rakko.Body{"keyword": args[0]}
@@ -176,7 +176,7 @@ func init() {
 		"importance", "desc", "", nil)
 }
 
-// ── rakko question-search ────────────────────────────────────────────────────
+// ── rakkokeyword question-search ────────────────────────────────────────────────────
 
 var questionLimit int
 
@@ -188,10 +188,10 @@ var questionCmd = &cobra.Command{
 		"by how often they occur. Up to 200 records.\n\n" +
 		"Useful for FAQ and Q&A content, and for AIO / GEO / LLMO work: these are\n" +
 		"the phrasings people are likely to type into an AI assistant.\n\n" +
-		"For the questions Google itself shows on a SERP, use `rakko other-keywords`.\n\n" +
+		"For the questions Google itself shows on a SERP, use `rakkokeyword other-keywords`.\n\n" +
 		"Cost: 3 credits per request.",
-	Example: "  rakko question-search ラッコ -n 50\n" +
-		"  rakko questions ラッコ -f jsonl",
+	Example: "  rakkokeyword question-search ラッコ -n 50\n" +
+		"  rakkokeyword questions ラッコ -f jsonl",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		body := rakko.Body{"keyword": args[0]}
@@ -213,7 +213,7 @@ func init() {
 	questionCmd.Flags().IntVarP(&questionLimit, "limit", "n", 0, "Maximum questions to return, 1-200 (API default: 100)")
 }
 
-// ── rakko ranking-keywords ───────────────────────────────────────────────────
+// ── rakkokeyword ranking-keywords ───────────────────────────────────────────────────
 
 var (
 	rankingList        listFlags
@@ -233,8 +233,8 @@ var rankingCmd = &cobra.Command{
 		"Narrow --search-top and --search-range for closer intent, widen them to\n" +
 		"discover keywords further afield.\n\n" +
 		"Cost: 4.5 credits per request.",
-	Example: "  rakko ranking-keywords ラッコ --search-top 10 --search-range 20\n" +
-		"  rakko ranking ラッコ --filter relevance.min=50 -n 200",
+	Example: "  rakkokeyword ranking-keywords ラッコ --search-top 10 --search-range 20\n" +
+		"  rakkokeyword ranking ラッコ --filter relevance.min=50 -n 200",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if cmd.Flags().Changed("search-top") {

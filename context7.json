@@ -1,13 +1,13 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
-  "projectTitle": "rakko — rakkokeyword (ラッコキーワード) API CLI",
-  "description": "A command-line client for the rakkokeyword API: search-engine suggestions, bulk related keywords, LSI and People-Also-Ask questions, same-intent keywords, fresh search volume and SEO difficulty, live Google rank checks, competitor and content-gap analysis, and the headings and co-occurring vocabulary of ranking pages — for the Japanese search market. Outputs table, JSON, JSONL or CSV, prices every call in credits before spending them, and embeds its full agent reference behind `rakko llm`.",
+  "projectTitle": "rakkokeyword — rakkokeyword (ラッコキーワード) API CLI",
+  "description": "A command-line client for the rakkokeyword API: search-engine suggestions, bulk related keywords, LSI and People-Also-Ask questions, same-intent keywords, fresh search volume and SEO difficulty, live Google rank checks, competitor and content-gap analysis, and the headings and co-occurring vocabulary of ranking pages — for the Japanese search market. Outputs table, JSON, JSONL or CSV, prices every call in credits before spending them, and embeds its full agent reference behind `rakkokeyword llm`.",
   "folders": ["internal/llmdocs"],
   "excludeFolders": ["plugins", ".github", ".claude"],
   "excludeFiles": ["README_ja.md"],
   "rules": [
     "Every call spends credits from the user's rakkokeyword account. Costs are 1.5 (suggest-keywords, related-keywords, site-search), 3 (question-search, headline, co-occurrence), 4.5 (ranking-keywords, influx-keywords, influx-pages, competitive, content-search) and 22.5 for a single other-keywords call. Price a command with --dry-run, which sends nothing.",
-    "Only `search-volume` and `search-rank` return freshly measured data. The metrics attached to suggest-keywords, related-keywords, influx-keywords and the rest are cached and often stale, and their seoDifficulty is usually null. Discover broadly with the cheap commands, then re-measure the shortlist with `rakko search-volume register --wait`.",
+    "Only `search-volume` and `search-rank` return freshly measured data. The metrics attached to suggest-keywords, related-keywords, influx-keywords and the rest are cached and often stale, and their seoDifficulty is usually null. Discover broadly with the cheap commands, then re-measure the shortlist with `rakkokeyword search-volume register --wait`.",
     "`search-volume` and `search-rank` are asynchronous: register returns a requestId, status must report isCompleted, then results can be fetched. `register --wait` chains all three. A --wait-timeout only stops the CLI waiting — the job keeps running and the requestId stays valid, recoverable through `histories`.",
     "`search-volume register` costs at least 15 credits however few keywords are sent, and --seo-difficulty multiplies the per-keyword cost by 25 (0.03 → 0.78) while adding up to 60 minutes. Batch keywords into one job and leave --seo-difficulty off unless difficulty is the question.",
     "null is not zero. A null seoDifficulty means not measured; a null position in search-rank results means the URL was not found within --depth. Reporting either as 0 misstates the data.",
@@ -16,6 +16,6 @@
     "Always pass -f json when parsing: it prints the API response byte for byte. Table output truncates cells and shows a curated column subset, jsonl prints one record per line, and csv flattens every field into dotted columns. Credits and progress go to stderr so stdout stays clean.",
     "Filters are dotted paths: --filter searchVolume.min=100 --filter keyword.notIncludes=グッズ, repeatable, with the accepted paths listed in each command's --help. Unknown paths are rejected locally before a credit is spent, and --filter-json takes a raw filter object for anything --filter cannot express.",
     "Limits are per endpoint: 20 targets for influx-keywords and influx-pages, 50 URLs for search-rank, 100 URLs for bulk-site-research, 200 records for question-search, 5,000 for ranking-keywords and content-search, 10,000 for the influx pair, 25,000 for related-keywords, 50,000 keywords per search-volume job. Compare data.summary.totalCount with returnedCount before treating a truncated result as complete.",
-    "`rakko raw <METHOD> <path> --data '{…}'` reaches any endpoint the CLI has not wrapped, with the same auth, retries and output formatting. The complete reference is embedded in the binary as `rakko llm` (or `rakko llm --format json`)."
+    "`rakkokeyword raw <METHOD> <path> --data '{…}'` reaches any endpoint the CLI has not wrapped, with the same auth, retries and output formatting. The complete reference is embedded in the binary as `rakkokeyword llm` (or `rakkokeyword llm --format json`)."
   ]
 }

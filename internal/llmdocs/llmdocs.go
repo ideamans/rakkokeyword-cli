@@ -1,4 +1,4 @@
-// Package llmdocs embeds the reference that `rakko llm` prints.
+// Package llmdocs embeds the reference that `rakkokeyword llm` prints.
 //
 // 00- through 40- are hand-written. 90-commands.md is generated from the cobra
 // command tree by `go generate ./...` and committed, because go:embed needs

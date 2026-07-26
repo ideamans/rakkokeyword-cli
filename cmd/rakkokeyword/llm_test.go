@@ -17,7 +17,7 @@ func TestLLMReferenceRenders(t *testing.T) {
 		t.Fatalf("render markdown: %v", err)
 	}
 	for _, want := range []string{
-		"# rakko — reference for AI agents",
+		"# rakkokeyword — reference for AI agents",
 		"# Metrics and how to read them",
 		"# JSON output schemas",
 		"# Limits, costs and traps",
@@ -51,16 +51,16 @@ func TestCatalogCoversEveryEndpointCommand(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, cmd := range []string{
-		"rakko suggest-keywords", "rakko related-keywords", "rakko other-keywords",
-		"rakko question-search", "rakko ranking-keywords",
-		"rakko search-volume register", "rakko search-volume histories",
-		"rakko search-volume status", "rakko search-volume results",
-		"rakko search-rank register", "rakko search-rank histories",
-		"rakko search-rank status", "rakko search-rank results",
-		"rakko metadata locations", "rakko metadata languages",
-		"rakko influx-keywords", "rakko influx-pages", "rakko competitive",
-		"rakko bulk-site-research", "rakko content-search", "rakko headline",
-		"rakko co-occurrence", "rakko site-search", "rakko raw",
+		"rakkokeyword suggest-keywords", "rakkokeyword related-keywords", "rakkokeyword other-keywords",
+		"rakkokeyword question-search", "rakkokeyword ranking-keywords",
+		"rakkokeyword search-volume register", "rakkokeyword search-volume histories",
+		"rakkokeyword search-volume status", "rakkokeyword search-volume results",
+		"rakkokeyword search-rank register", "rakkokeyword search-rank histories",
+		"rakkokeyword search-rank status", "rakkokeyword search-rank results",
+		"rakkokeyword metadata locations", "rakkokeyword metadata languages",
+		"rakkokeyword influx-keywords", "rakkokeyword influx-pages", "rakkokeyword competitive",
+		"rakkokeyword bulk-site-research", "rakkokeyword content-search", "rakkokeyword headline",
+		"rakkokeyword co-occurrence", "rakkokeyword site-search", "rakkokeyword raw",
 	} {
 		if !strings.Contains(md, "`"+cmd+"`") {
 			t.Errorf("the catalog does not document %q — run `go generate ./...`", cmd)

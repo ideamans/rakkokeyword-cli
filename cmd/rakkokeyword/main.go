@@ -1,4 +1,4 @@
-// Command rakko is a CLI for the ラッコキーワード (rakkokeyword) API.
+// Command rakkokeyword is a CLI for the ラッコキーワード (rakkokeyword) API.
 package main
 
 import (
@@ -24,7 +24,7 @@ import (
 // recorded in plugins/rakkokeyword-cli/.claude-plugin/plugin.json — a test
 // enforces that the two agree, and the release workflow enforces that both
 // agree with the git tag. Bump it in the same commit as the tag.
-const PluginVersion = "0.1.0"
+const PluginVersion = "0.2.0"
 
 func main() {
 	// --llm anywhere on the command line prints the reference and exits,
@@ -45,7 +45,7 @@ func main() {
 }
 
 var rootCmd = &cobra.Command{
-	Use:     "rakko",
+	Use:     "rakkokeyword",
 	Short:   "Keyword research with the rakkokeyword (ラッコキーワード) API",
 	Version: PluginVersion,
 	Long: "Keyword research, SEO metrics, competitor and SERP data from the\n" +
@@ -53,7 +53,7 @@ var rootCmd = &cobra.Command{
 		"Calls consume credits from the account the API key belongs to. Every\n" +
 		"command states its cost, and --dry-run prints the request without\n" +
 		"spending anything.\n\n" +
-		"The full agent-facing reference is embedded in the binary: `rakko llm`.",
+		"The full agent-facing reference is embedded in the binary: `rakkokeyword llm`.",
 
 	// A rejected flag value or a failed API call is not a reason to reprint
 	// the whole usage block; the error line is the useful part.

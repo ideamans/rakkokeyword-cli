@@ -1,6 +1,6 @@
 ---
 paths:
-  - "cmd/rakko/*.go"
+  - "cmd/rakkokeyword/*.go"
   - "internal/rakko/params.go"
   - "internal/output/*.go"
   - "internal/llmdocs/0*.md"
@@ -24,7 +24,7 @@ Two things generation cannot do for you:
 - **Credit cost changed** — update the `Cost:` line in the command's `Long`, the
   `credits` field of its `call`, both README cost tables and the table in
   `30-gotchas.md`. A stale cost makes an agent quote the user a wrong price.
-  `skills/rakko-usage/SKILL.md` deliberately carries no cost table — only the
+  `skills/rakkokeyword-usage/SKILL.md` deliberately carries no cost table — only the
   three extremes (other-keywords 22.5, the 15-credit search-volume minimum, the
   25× `--seo-difficulty` multiplier) — so touch it only when one of those moves.
 

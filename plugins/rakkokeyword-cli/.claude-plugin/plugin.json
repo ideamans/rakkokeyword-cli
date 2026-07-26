@@ -1,7 +1,7 @@
 {
   "name": "rakkokeyword-cli",
-  "description": "Adds /rakko-usage and /rakko-install skills for keyword research with the rakkokeyword (ラッコキーワード) API — search suggestions, SEO metrics, Google rank checks, competitor analysis and content briefs for the Japanese search market.",
-  "version": "0.1.0",
+  "description": "Adds /rakkokeyword-usage and /rakkokeyword-install skills for keyword research with the rakkokeyword (ラッコキーワード) API — search suggestions, SEO metrics, Google rank checks, competitor analysis and content briefs for the Japanese search market.",
+  "version": "0.2.0",
   "author": {
     "name": "Ideamans Inc.",
     "email": "support@ideamans.com"

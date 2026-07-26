@@ -1,6 +1,6 @@
-# rakko — reference for AI agents
+# rakkokeyword — reference for AI agents
 
-`rakko` is a CLI for the ラッコキーワード (rakkokeyword) API: keyword research,
+`rakkokeyword` is a CLI for the ラッコキーワード (rakkokeyword) API: keyword research,
 SEO metrics, SERP rankings, competitor and content analysis, mostly for the
 Japanese search market.
 
@@ -16,14 +16,14 @@ end; the rest are lookups.
 | `10-metrics.md` | before quoting a number: units, ranges, how fresh it is |
 | `20-schemas.md` | before parsing: the JSON shape of each response |
 | `30-gotchas.md` | before a big or repeated call: costs, limits, async behaviour |
-| `90-commands.md` | rarely — `rakko <command> --help` says the same thing for one command |
+| `90-commands.md` | rarely — `rakkokeyword <command> --help` says the same thing for one command |
 
 Pull one chapter instead of the whole reference:
 
 ```bash
-rakko llm --format json | jq -r '.[] | select(.file=="20-schemas.md") | .body'
-rakko llm | sed -n '/^# Limits, costs and traps/,$p'
-rakko suggest-keywords --help          # flags, defaults and cost for one command
+rakkokeyword llm --format json | jq -r '.[] | select(.file=="20-schemas.md") | .body'
+rakkokeyword llm | sed -n '/^# Limits, costs and traps/,$p'
+rakkokeyword suggest-keywords --help          # flags, defaults and cost for one command
 ```
 
 ## The four rules
@@ -51,11 +51,11 @@ The API key is resolved in this order:
 1. `--api-key`
 2. `RAKKOKEYWORD_API_KEY` (preferred; nothing is written to disk)
 3. `RAKKO_API_KEY`
-4. the config file (`rakko auth set-api-key <key>`)
+4. the config file (`rakkokeyword auth set-api-key <key>`)
 
-`rakko auth status` reports which source is in play without revealing the key.
+`rakkokeyword auth status` reports which source is in play without revealing the key.
 Keys are issued from a rakkokeyword STANDARD plan or above (up to 5 per
-account). `rakko metadata locations` and `rakko metadata languages` are the only
+account). `rakkokeyword metadata locations` and `rakkokeyword metadata languages` are the only
 commands that work without a key.
 
 ## Which command answers which question
@@ -102,7 +102,7 @@ Table and CSV columns are dotted paths into a record — `metrics.searchVolume`,
 `ranking.position`, `page.url`. `--fields` overrides them:
 
 ```bash
-rakko suggest-keywords ラッコ --fields keyword,metrics.searchVolume -f csv
+rakkokeyword suggest-keywords ラッコ --fields keyword,metrics.searchVolume -f csv
 ```
 
 Table output shows a curated subset; CSV shows every field the response has.
@@ -113,7 +113,7 @@ Table output shows a curated subset; CSV shows every field the response has.
 command's `--help`. Repeating a list-valued path appends to it.
 
 ```bash
-rakko related-keywords ラッコ \
+rakkokeyword related-keywords ラッコ \
   --filter searchVolume.min=100 --filter searchVolume.max=10000 \
   --filter keyword.notIncludes=グッズ,中古
 ```
@@ -125,25 +125,25 @@ takes a raw JSON filter object for anything `--filter` cannot express.
 
 ```bash
 # 1. Map the demand (1.5 credits)
-rakko suggest-keywords ラッコ --increase-keyword --filter searchVolume.min=100 -f json > suggest.json
+rakkokeyword suggest-keywords ラッコ --increase-keyword --filter searchVolume.min=100 -f json > suggest.json
 
 # 2. Confirm the numbers on the shortlist (min 15 credits, ~10 seconds)
-rakko search-volume register --keywords-file shortlist.txt --wait -f json > volume.json
+rakkokeyword search-volume register --keywords-file shortlist.txt --wait -f json > volume.json
 
 # 3. See what the ranking pages cover (3 + 3 credits)
-rakko headline ラッコ -f json > headlines.json
-rakko co-occurrence ラッコ --details=false -f json > vocabulary.json
+rakkokeyword headline ラッコ -f json > headlines.json
+rakkokeyword co-occurrence ラッコ --details=false -f json > vocabulary.json
 
 # 4. Answer the questions readers actually have (3 credits)
-rakko question-search ラッコ -n 50 -f json > questions.json
+rakkokeyword question-search ラッコ -n 50 -f json > questions.json
 ```
 
 ## Failure modes
 
 | Symptom | Cause | Fix |
 | --- | --- | --- |
-| `no API key` | nothing configured | `export RAKKOKEYWORD_API_KEY=…` or `rakko auth set-api-key` |
-| HTTP 403 | wrong or revoked key | check `rakko auth status`, reissue the key |
+| `no API key` | nothing configured | `export RAKKOKEYWORD_API_KEY=…` or `rakkokeyword auth set-api-key` |
+| HTTP 403 | wrong or revoked key | check `rakkokeyword auth status`, reissue the key |
 | HTTP 402 | account out of credits | nothing the CLI can do; the user must top up |
 | HTTP 429 | rate limit | already retried with backoff; space calls out or lower concurrency |
 | HTTP 400 | a parameter the API rejected | re-read the command's `--help`; the message names the field |

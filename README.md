@@ -6,12 +6,12 @@ content briefs — mostly for the Japanese search market.
 
 Every API operation is covered, output is `table` / `json` / `jsonl` / `csv`,
 and the complete agent-facing reference is embedded in the binary behind
-`rakko llm`.
+`rakkokeyword llm`.
 
 日本語版は [README_ja.md](README_ja.md)。
 
 ```bash
-rakko suggest-keywords ラッコ -n 5
+rakkokeyword suggest-keywords ラッコ -n 5
 ```
 
 ```
@@ -29,12 +29,12 @@ keyword=ラッコ  totalCount=864  returnedCount=5
 ## Install
 
 ```bash
-go install github.com/ideamans/rakkokeyword-cli/cmd/rakko@latest
+go install github.com/ideamans/rakkokeyword-cli/cmd/rakkokeyword@latest
 ```
 
 Or download a binary from the [releases page](https://github.com/ideamans/rakkokeyword-cli/releases).
-The archives are named after the binary (`rakko`), not the repository:
-`rakko_<version>_<os>_<arch>.tar.gz`.
+The archives are named after the binary (`rakkokeyword`), not the repository:
+`rakkokeyword_<version>_<os>_<arch>.tar.gz`.
 
 ## Authentication
 
@@ -43,14 +43,14 @@ account).
 
 ```bash
 export RAKKOKEYWORD_API_KEY=your-key   # preferred: nothing is stored on disk
-rakko auth set-api-key your-key        # or persist it in the config file
-rakko auth status                      # shows the source, never the key
+rakkokeyword auth set-api-key your-key        # or persist it in the config file
+rakkokeyword auth status                      # shows the source, never the key
 ```
 
 Resolution order: `--api-key` → `RAKKOKEYWORD_API_KEY` → `RAKKO_API_KEY` →
 config file (`~/.config/rakkokeyword-cli/config.json`).
 
-`rakko metadata locations` and `rakko metadata languages` work without a key.
+`rakkokeyword metadata locations` and `rakkokeyword metadata languages` work without a key.
 
 ## Credits
 
@@ -59,7 +59,7 @@ cost in `--help`, prints what it consumed on stderr, and can be priced without
 sending anything:
 
 ```bash
-rakko other-keywords ラッコ --dry-run
+rakkokeyword other-keywords ラッコ --dry-run
 ```
 
 ```json
@@ -87,23 +87,23 @@ rakko other-keywords ラッコ --dry-run
 ### Keyword discovery
 
 ```bash
-rakko suggest-keywords ラッコ --modes google,bing --increase-keyword   # search suggestions
-rakko related-keywords ラッコ --match-type phraseMatch -n 5000         # bulk keyword harvest
-rakko other-keywords ラッコ                                            # LSI + People Also Ask
-rakko question-search ラッコ -n 200                                    # question phrasings
-rakko ranking-keywords ラッコ --search-top 10 --search-range 20        # same-intent keywords
+rakkokeyword suggest-keywords ラッコ --modes google,bing --increase-keyword   # search suggestions
+rakkokeyword related-keywords ラッコ --match-type phraseMatch -n 5000         # bulk keyword harvest
+rakkokeyword other-keywords ラッコ                                            # LSI + People Also Ask
+rakkokeyword question-search ラッコ -n 200                                    # question phrasings
+rakkokeyword ranking-keywords ラッコ --search-top 10 --search-range 20        # same-intent keywords
 ```
 
 ### Fresh metrics and rankings (asynchronous)
 
 ```bash
-rakko search-volume register --keywords-file keywords.txt --wait
-rakko search-volume histories
-rakko search-volume status 1234567
-rakko search-volume results 1234567 -n 500 -f csv
+rakkokeyword search-volume register --keywords-file keywords.txt --wait
+rakkokeyword search-volume histories
+rakkokeyword search-volume status 1234567
+rakkokeyword search-volume results 1234567 -n 500 -f csv
 
-rakko search-rank register ラッコ --url https://example.com/ --depth 100 --device mobile --wait
-rakko search-rank results 01HQZX… --with-aggregation -f json
+rakkokeyword search-rank register ラッコ --url https://example.com/ --depth 100 --device mobile --wait
+rakkokeyword search-rank results 01HQZX… --with-aggregation -f json
 ```
 
 `register --wait` performs register → poll → results in one invocation. Without
@@ -112,40 +112,40 @@ it, the printed `requestId` can be picked up later — jobs keep running.
 ### Sites and competitors
 
 ```bash
-rakko influx-keywords --target https://example.com/ --match-type sub_domain
-rakko influx-pages --target https://example.com/ -n 50
-rakko competitive https://example.com/
-rakko bulk-site-research --urls-file sites.txt
-rakko content-search ラッコ --search-target title
-rakko site-search --filter keyword.includes=ラッコ
+rakkokeyword influx-keywords --target https://example.com/ --match-type sub_domain
+rakkokeyword influx-pages --target https://example.com/ -n 50
+rakkokeyword competitive https://example.com/
+rakkokeyword bulk-site-research --urls-file sites.txt
+rakkokeyword content-search ラッコ --search-target title
+rakkokeyword site-search --filter keyword.includes=ラッコ
 ```
 
 ### Content briefs
 
 ```bash
-rakko headline ラッコ                       # h1–h6 of the ranking pages
-rakko co-occurrence ラッコ --details=false   # vocabulary of the ranking pages
+rakkokeyword headline ラッコ                       # h1–h6 of the ranking pages
+rakkokeyword co-occurrence ラッコ --details=false   # vocabulary of the ranking pages
 ```
 
 ### Escape hatch
 
 ```bash
-rakko raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'
-rakko raw GET /v1/metadata/locations --query countryCode=JP
+rakkokeyword raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'
+rakkokeyword raw GET /v1/metadata/locations --query countryCode=JP
 ```
 
 ## Output
 
 ```bash
-rakko suggest-keywords ラッコ                 # table (humans; truncated, curated columns)
-rakko suggest-keywords ラッコ -f json         # the API response, byte for byte
-rakko suggest-keywords ラッコ -f jsonl        # one record per line
-rakko suggest-keywords ラッコ -f csv          # every field, as dotted columns
-rakko suggest-keywords ラッコ --fields keyword,metrics.searchVolume -f csv
+rakkokeyword suggest-keywords ラッコ                 # table (humans; truncated, curated columns)
+rakkokeyword suggest-keywords ラッコ -f json         # the API response, byte for byte
+rakkokeyword suggest-keywords ラッコ -f jsonl        # one record per line
+rakkokeyword suggest-keywords ラッコ -f csv          # every field, as dotted columns
+rakkokeyword suggest-keywords ラッコ --fields keyword,metrics.searchVolume -f csv
 ```
 
 Credits, progress and warnings go to stderr, so `> file` captures clean data.
-`rakko auth set-format json` changes the default.
+`rakkokeyword auth set-format json` changes the default.
 
 ## Filtering
 
@@ -153,7 +153,7 @@ Credits, progress and warnings go to stderr, so `> file` captures clean data.
 accepts, and unknown ones are rejected before a credit is spent.
 
 ```bash
-rakko related-keywords ラッコ \
+rakkokeyword related-keywords ラッコ \
   --filter searchVolume.min=100 \
   --filter searchVolume.max=10000 \
   --filter keyword.notIncludes=グッズ,中古 \
@@ -166,8 +166,8 @@ express.
 ## For AI agents
 
 ```bash
-rakko llm                  # the full reference (rules, metrics, schemas, catalog)
-rakko llm --format json    # the same, as chapters
+rakkokeyword llm                  # the full reference (rules, metrics, schemas, catalog)
+rakkokeyword llm --format json    # the same, as chapters
 ```
 
 The reference is embedded in the binary, so it works offline and always matches

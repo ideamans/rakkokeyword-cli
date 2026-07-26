@@ -15,14 +15,14 @@ var searchRankCmd = &cobra.Command{
 	Short:   "Check live Google rankings of URLs for a list of keywords",
 	Long: "Measures where URLs or domains currently rank in Google for given keywords,\n" +
 		"as an asynchronous job: register, poll status, fetch results.\n\n" +
-		"Unlike the ranks bundled with `rakko influx-keywords`, these are freshly\n" +
+		"Unlike the ranks bundled with `rakkokeyword influx-keywords`, these are freshly\n" +
 		"fetched SERPs for the region, language, device and OS you specify.\n\n" +
-		"`rakko search-rank register --wait` runs all three steps in one go.",
+		"`rakkokeyword search-rank register --wait` runs all three steps in one go.",
 }
 
 func init() { rootCmd.AddCommand(searchRankCmd) }
 
-// ── rakko search-rank register ───────────────────────────────────────────────
+// ── rakkokeyword search-rank register ───────────────────────────────────────────────
 
 var (
 	rankKeywords    []string
@@ -53,16 +53,16 @@ var rankRegisterCmd = &cobra.Command{
 	Long: "Registers a rank check and prints the requestId. Every keyword is checked\n" +
 		"against every URL, so 10 keywords and 3 URLs is one job covering 30 pairs —\n" +
 		"but the cost is per keyword, not per pair.\n\n" +
-		"Without --wait, follow up with `rakko search-rank status <requestId>` and\n" +
-		"then `rakko search-rank results <requestId>`. With --wait this command\n" +
+		"Without --wait, follow up with `rakkokeyword search-rank status <requestId>` and\n" +
+		"then `rakkokeyword search-rank results <requestId>`. With --wait this command\n" +
 		"polls and prints the results itself.\n\n" +
 		"Timing: up to 10 keywords usually finishes in minutes, larger jobs within\n" +
 		"about an hour, and a busy queue can take longer.\n\n" +
 		"Cost: 0.9 credits per keyword for ranks 1-30, plus 0.3 per keyword for each\n" +
 		"additional 10 ranks of --depth. --search-volume adds the metrics of\n" +
-		"`rakko search-volume` on top.",
-	Example: "  rakko search-rank register ラッコ カワウソ --url https://example.com/ --wait\n" +
-		"  rakko search-rank register --keywords-file kw.txt --url https://example.com/ --depth 100 --device mobile",
+		"`rakkokeyword search-volume` on top.",
+	Example: "  rakkokeyword search-rank register ラッコ カワウソ --url https://example.com/ --wait\n" +
+		"  rakkokeyword search-rank register --keywords-file kw.txt --url https://example.com/ --depth 100 --device mobile",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		keywords, err := collectValues(append(args, rankKeywords...), rankKeywordFile)
 		if err != nil {
@@ -155,15 +155,15 @@ func init() {
 	f.IntVar(&rankDepth, "depth", 0, "How deep to read the SERP: 30 / 40 / … / 100 (API default: 30)")
 	f.BoolVar(&rankWithVolume, "search-volume", false, "Also fetch search volume and SEO difficulty for every keyword (extra credits)")
 	f.BoolVar(&rankDedupe, "deduplicate", true, "Drop duplicate keywords before charging for them (API default: true)")
-	f.StringVar(&rankLocation, "location", "", "Region name for the SERP, from `rakko metadata locations` (API default: Japan)")
-	f.StringVar(&rankLanguage, "language", "", "Language name for the SERP, from `rakko metadata languages` (API default: Japanese)")
+	f.StringVar(&rankLocation, "location", "", "Region name for the SERP, from `rakkokeyword metadata locations` (API default: Japan)")
+	f.StringVar(&rankLanguage, "language", "", "Language name for the SERP, from `rakkokeyword metadata languages` (API default: Japanese)")
 	f.StringVar(&rankDevice, "device", "", "Device to emulate: desktop / mobile (API default: desktop)")
 	f.StringVar(&rankOS, "os", "", "OS to emulate: windows / macos (desktop) or android / ios (mobile)")
 	rankWait.addTo(rankRegisterCmd, "; the result flags below then shape the fetched results")
 	addRankResultFlags(rankRegisterCmd)
 }
 
-// ── rakko search-rank results ────────────────────────────────────────────────
+// ── rakkokeyword search-rank results ────────────────────────────────────────────────
 
 func addRankResultFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVar(&rankAggregation, "with-aggregation", false, "Include per-target totals (estimated traffic, rank distribution) in the summary")
@@ -175,14 +175,14 @@ func addRankResultFlags(cmd *cobra.Command) {
 var rankResultsCmd = &cobra.Command{
 	Use:   "results <requestId>",
 	Short: "Fetch the results of a completed rank check (free)",
-	Long: "Fetches the ranks for a requestId from `rakko search-rank register`.\n\n" +
+	Long: "Fetches the ranks for a requestId from `rakkokeyword search-rank register`.\n\n" +
 		"Each item carries a rankings array with one entry per target URL. A null\n" +
 		"position means the URL was not found within --depth — that is \"not in the\n" +
 		"top N\", not \"rank 0\". In table output the rankings array is shown as JSON;\n" +
 		"use -f json or --fields to work with it properly.\n\n" +
 		"Cost: free.",
-	Example: "  rakko search-rank results 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4\n" +
-		"  rakko search-rank results 01HQZX… --with-aggregation -f json",
+	Example: "  rakkokeyword search-rank results 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4\n" +
+		"  rakkokeyword search-rank results 01HQZX… --with-aggregation -f json",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return runRankResults(cmd, args[0])
@@ -213,7 +213,7 @@ func init() {
 	addRankResultFlags(rankResultsCmd)
 }
 
-// ── rakko search-rank status ─────────────────────────────────────────────────
+// ── rakkokeyword search-rank status ─────────────────────────────────────────────────
 
 var rankStatusCmd = &cobra.Command{
 	Use:   "status <requestId>",
@@ -223,7 +223,7 @@ var rankStatusCmd = &cobra.Command{
 		"A searchVolumeAndSeoDifficulty status of failed or integration_failed keeps\n" +
 		"isCompleted false — the SERP ranks may still be fetchable.\n\n" +
 		"Cost: free.",
-	Example: "  rakko search-rank status 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4 --wait",
+	Example: "  rakkokeyword search-rank status 01HQZX5Y4JMQK8XNQ7WVZXZ5Y4 --wait",
 	Args:    cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		path := "/v1/search-rank/" + args[0] + "/status"
@@ -249,7 +249,7 @@ func init() {
 	rankStatusWait.addTo(rankStatusCmd, "")
 }
 
-// ── rakko search-rank histories ──────────────────────────────────────────────
+// ── rakkokeyword search-rank histories ──────────────────────────────────────────────
 
 var rankHistoriesCmd = &cobra.Command{
 	Use:   "histories",
@@ -257,7 +257,7 @@ var rankHistoriesCmd = &cobra.Command{
 	Long: "Past rank checks with their requestId, status, keyword and URL summaries,\n" +
 		"newest first. Use it to recover a requestId.\n\n" +
 		"Cost: free.",
-	Example: "  rakko search-rank histories -n 20 --status completed",
+	Example: "  rakkokeyword search-rank histories -n 20 --status completed",
 	Args:    cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		q, err := historiesQuery(cmd, rankHistLimit, rankHistOffset, rankHistStatus)

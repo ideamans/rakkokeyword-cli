@@ -53,7 +53,7 @@ register  →  requestId  →  status (poll)  →  results
   to 60 minutes. `search-rank` is minutes for ≤10 keywords, up to an hour
   beyond. A busy queue can mean hours for either.
 - `--wait-timeout` (default 1 hour) only stops the CLI waiting. The job keeps
-  running: recover it with `rakko search-volume histories` and fetch the
+  running: recover it with `rakkokeyword search-volume histories` and fetch the
   results by requestId whenever it finishes.
 - Fetching results before completion returns partial data without an error.
   Check `isCompleted` first.
@@ -98,11 +98,11 @@ register  →  requestId  →  status (poll)  →  results
 
 `--location` and `--language` take names, not codes: `Japan`, `Japanese`. City
 level works as `City,Region,Country` (`Shibuya,Tokyo,Japan`); a prefecture on
-its own does not. Confirm with `rakko metadata locations --country-code JP`,
+its own does not. Confirm with `rakkokeyword metadata locations --country-code JP`,
 which is free and needs no API key.
 
 ## When a parameter is missing from the CLI
 
-`rakko raw <METHOD> <path> --data '{…}'` sends anything to any endpoint with the
+`rakkokeyword raw <METHOD> <path> --data '{…}'` sends anything to any endpoint with the
 same auth, retries and formatting. The API's own spec is at
 <https://api.rakkokeyword.com/api-docs.json>.

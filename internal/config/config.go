@@ -95,7 +95,7 @@ func (c *Config) APIKeyResolved(flagValue string) string {
 }
 
 // APIKeySource names where APIKeyResolved would take the key from, for
-// `rakko auth status`. It never returns the key itself.
+// `rakkokeyword auth status`. It never returns the key itself.
 func (c *Config) APIKeySource(flagValue string) string {
 	switch {
 	case flagValue != "":

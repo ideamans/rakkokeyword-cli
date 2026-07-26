@@ -5,10 +5,10 @@
 記事構成の下調べまでを1つのコマンドで扱えます。
 
 APIの全機能に対応し、出力は `table` / `json` / `jsonl` / `csv`、AIエージェント向けの
-リファレンスは `rakko llm` としてバイナリに埋め込んであります。
+リファレンスは `rakkokeyword llm` としてバイナリに埋め込んであります。
 
 ```bash
-rakko suggest-keywords ラッコ -n 5
+rakkokeyword suggest-keywords ラッコ -n 5
 ```
 
 ```
@@ -24,12 +24,12 @@ keyword=ラッコ  totalCount=864  returnedCount=5
 ## インストール
 
 ```bash
-go install github.com/ideamans/rakkokeyword-cli/cmd/rakko@latest
+go install github.com/ideamans/rakkokeyword-cli/cmd/rakkokeyword@latest
 ```
 
 または [リリースページ](https://github.com/ideamans/rakkokeyword-cli/releases) から
 バイナリを取得します。アーカイブ名はリポジトリ名ではなくバイナリ名基準で
-`rakko_<version>_<os>_<arch>.tar.gz` です。
+`rakkokeyword_<version>_<os>_<arch>.tar.gz` です。
 
 ## 認証
 
@@ -37,14 +37,14 @@ APIキーはラッコキーワードのスタンダードプラン以上で発�
 
 ```bash
 export RAKKOKEYWORD_API_KEY=your-key   # 推奨。ディスクに何も残さない
-rakko auth set-api-key your-key        # 設定ファイルに保存する場合
-rakko auth status                      # キー自体は表示せず、取得元だけ表示
+rakkokeyword auth set-api-key your-key        # 設定ファイルに保存する場合
+rakkokeyword auth status                      # キー自体は表示せず、取得元だけ表示
 ```
 
 優先順位は `--api-key` → `RAKKOKEYWORD_API_KEY` → `RAKKO_API_KEY` → 設定ファイル
 （`~/.config/rakkokeyword-cli/config.json`）です。
 
-`rakko metadata locations` と `rakko metadata languages` はAPIキーなしで動きます。
+`rakkokeyword metadata locations` と `rakkokeyword metadata languages` はAPIキーなしで動きます。
 
 ## クレジット消費
 
@@ -53,7 +53,7 @@ APIコールはアカウントのクレジットを消費します。各コマ�
 費用を確認できます。
 
 ```bash
-rakko other-keywords ラッコ --dry-run
+rakkokeyword other-keywords ラッコ --dry-run
 ```
 
 | コマンド | 消費 |
@@ -78,23 +78,23 @@ rakko other-keywords ラッコ --dry-run
 ### キーワード発掘
 
 ```bash
-rakko suggest-keywords ラッコ --modes google,bing --increase-keyword   # サジェスト
-rakko related-keywords ラッコ --match-type phraseMatch -n 5000         # 関連KW大量取得
-rakko other-keywords ラッコ                                            # LSI + 他の人はこちらも質問
-rakko question-search ラッコ -n 200                                    # よくある質問
-rakko ranking-keywords ラッコ --search-top 10 --search-range 20        # 同時ランクインKW
+rakkokeyword suggest-keywords ラッコ --modes google,bing --increase-keyword   # サジェスト
+rakkokeyword related-keywords ラッコ --match-type phraseMatch -n 5000         # 関連KW大量取得
+rakkokeyword other-keywords ラッコ                                            # LSI + 他の人はこちらも質問
+rakkokeyword question-search ラッコ -n 200                                    # よくある質問
+rakkokeyword ranking-keywords ラッコ --search-top 10 --search-range 20        # 同時ランクインKW
 ```
 
 ### 最新のSEO指標・検索順位（非同期）
 
 ```bash
-rakko search-volume register --keywords-file keywords.txt --wait
-rakko search-volume histories
-rakko search-volume status 1234567
-rakko search-volume results 1234567 -n 500 -f csv
+rakkokeyword search-volume register --keywords-file keywords.txt --wait
+rakkokeyword search-volume histories
+rakkokeyword search-volume status 1234567
+rakkokeyword search-volume results 1234567 -n 500 -f csv
 
-rakko search-rank register ラッコ --url https://example.com/ --depth 100 --device mobile --wait
-rakko search-rank results 01HQZX… --with-aggregation -f json
+rakkokeyword search-rank register ラッコ --url https://example.com/ --depth 100 --device mobile --wait
+rakkokeyword search-rank results 01HQZX… --with-aggregation -f json
 ```
 
 `register --wait` は「登録 → ステータス確認 → 結果取得」を1コマンドで実行します。
@@ -104,19 +104,19 @@ rakko search-rank results 01HQZX… --with-aggregation -f json
 ### サイト・競合調査
 
 ```bash
-rakko influx-keywords --target https://example.com/ --match-type sub_domain
-rakko influx-pages --target https://example.com/ -n 50
-rakko competitive https://example.com/
-rakko bulk-site-research --urls-file sites.txt
-rakko content-search ラッコ --search-target title
-rakko site-search --filter keyword.includes=ラッコ
+rakkokeyword influx-keywords --target https://example.com/ --match-type sub_domain
+rakkokeyword influx-pages --target https://example.com/ -n 50
+rakkokeyword competitive https://example.com/
+rakkokeyword bulk-site-research --urls-file sites.txt
+rakkokeyword content-search ラッコ --search-target title
+rakkokeyword site-search --filter keyword.includes=ラッコ
 ```
 
 ### 記事構成の下調べ
 
 ```bash
-rakko headline ラッコ                       # 上位ページの見出し(h1〜h6)
-rakko co-occurrence ラッコ --details=false   # 上位ページの共起語
+rakkokeyword headline ラッコ                       # 上位ページの見出し(h1〜h6)
+rakkokeyword co-occurrence ラッコ --details=false   # 上位ページの共起語
 ```
 
 ### エスケープハッチ
@@ -124,22 +124,22 @@ rakko co-occurrence ラッコ --details=false   # 上位ページの共起語
 CLIがラップしていないパラメータでも、生のJSONで任意のエンドポイントを叩けます。
 
 ```bash
-rakko raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'
-rakko raw GET /v1/metadata/locations --query countryCode=JP
+rakkokeyword raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'
+rakkokeyword raw GET /v1/metadata/locations --query countryCode=JP
 ```
 
 ## 出力形式
 
 ```bash
-rakko suggest-keywords ラッコ                 # table（人間向け。省略あり）
-rakko suggest-keywords ラッコ -f json         # APIレスポンスそのまま
-rakko suggest-keywords ラッコ -f jsonl        # 1レコード1行
-rakko suggest-keywords ラッコ -f csv          # 全フィールドをドット区切り列で
-rakko suggest-keywords ラッコ --fields keyword,metrics.searchVolume -f csv
+rakkokeyword suggest-keywords ラッコ                 # table（人間向け。省略あり）
+rakkokeyword suggest-keywords ラッコ -f json         # APIレスポンスそのまま
+rakkokeyword suggest-keywords ラッコ -f jsonl        # 1レコード1行
+rakkokeyword suggest-keywords ラッコ -f csv          # 全フィールドをドット区切り列で
+rakkokeyword suggest-keywords ラッコ --fields keyword,metrics.searchVolume -f csv
 ```
 
 消費クレジット・進捗・警告はstderrに出るため、`> file` でデータだけを取り出せます。
-既定の形式は `rakko auth set-format json` で変更できます。
+既定の形式は `rakkokeyword auth set-format json` で変更できます。
 
 ## 絞り込み
 
@@ -147,7 +147,7 @@ rakko suggest-keywords ラッコ --fields keyword,metrics.searchVolume -f csv
 一覧があり、存在しないパスはAPIを叩く前にエラーになります。
 
 ```bash
-rakko related-keywords ラッコ \
+rakkokeyword related-keywords ラッコ \
   --filter searchVolume.min=100 \
   --filter searchVolume.max=10000 \
   --filter keyword.notIncludes=グッズ,中古 \
@@ -172,8 +172,8 @@ rakko related-keywords ラッコ \
 ## AIエージェント向け
 
 ```bash
-rakko llm                  # 全リファレンス（鉄則・指標・スキーマ・コマンドカタログ）
-rakko llm --format json    # 同じ内容を章ごとのJSONで
+rakkokeyword llm                  # 全リファレンス（鉄則・指標・スキーマ・コマンドカタログ）
+rakkokeyword llm --format json    # 同じ内容を章ごとのJSONで
 ```
 
 リファレンスはバイナリに埋め込まれているためオフラインでも動き、実行中のバージョンと

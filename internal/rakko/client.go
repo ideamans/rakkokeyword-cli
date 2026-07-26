@@ -1,4 +1,4 @@
-// Package rakko is a client for the ラッコキーワード (rakkokeyword) API.
+// Package rakkokeyword is a client for the ラッコキーワード (rakkokeyword) API.
 //
 // Every endpoint answers with the same envelope — result / meta / data /
 // errors — so the client keeps the response body verbatim and only decodes the
@@ -103,11 +103,11 @@ func (e *APIError) Error() string {
 func statusMessage(status int) string {
 	switch status {
 	case http.StatusBadRequest:
-		return "validation error — check the parameters against `rakko llm`"
+		return "validation error — check the parameters against `rakkokeyword llm`"
 	case http.StatusPaymentRequired:
 		return "insufficient credit on the rakkokeyword account"
 	case http.StatusUnauthorized, http.StatusForbidden:
-		return "authentication failed — check the API key (`rakko auth status`)"
+		return "authentication failed — check the API key (`rakkokeyword auth status`)"
 	case http.StatusNotFound:
 		return "not found — check the path or requestId"
 	case http.StatusTooManyRequests:
@@ -151,7 +151,7 @@ func retriable(status int) bool {
 // exponential backoff.
 func (c *Client) Do(ctx context.Context, r Request) (*Response, error) {
 	if c.APIKey == "" && !r.NoAuth {
-		return nil, fmt.Errorf("no API key: set RAKKOKEYWORD_API_KEY, pass --api-key, or run `rakko auth set-api-key <key>`")
+		return nil, fmt.Errorf("no API key: set RAKKOKEYWORD_API_KEY, pass --api-key, or run `rakkokeyword auth set-api-key <key>`")
 	}
 
 	var payload []byte

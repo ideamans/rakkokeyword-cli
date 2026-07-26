@@ -7,7 +7,7 @@ import (
 	"github.com/ideamans/rakkokeyword-cli/internal/rakko"
 )
 
-// ── rakko headline ───────────────────────────────────────────────────────────
+// ── rakkokeyword headline ───────────────────────────────────────────────────────────
 
 var (
 	headlineList          listFlags
@@ -24,11 +24,11 @@ var headlineCmd = &cobra.Command{
 		"page's character and heading count and the averages across them.\n\n" +
 		"Topics that recur across the top pages are the ones Google's users are\n" +
 		"assumed to need covered, which makes this the step before drafting a title\n" +
-		"and outline. Pair it with `rakko co-occurrence` for the vocabulary.\n\n" +
+		"and outline. Pair it with `rakkokeyword co-occurrence` for the vocabulary.\n\n" +
 		"Only h1-h4 are collected by default; add --h5 --h6 for the rest.\n\n" +
 		"Cost: 3 credits per request.",
-	Example: "  rakko headline ラッコ\n" +
-		"  rakko headline ラッコ --less-characters -f json | jq '.data.items[].headlines'",
+	Example: "  rakkokeyword headline ラッコ\n" +
+		"  rakkokeyword headline ラッコ --less-characters -f json | jq '.data.items[].headlines'",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		body := rakko.Body{"keyword": args[0]}
@@ -76,7 +76,7 @@ func init() {
 		"position", "asc", "1-20 (API default: 20)", nil)
 }
 
-// ── rakko co-occurrence ──────────────────────────────────────────────────────
+// ── rakkokeyword co-occurrence ──────────────────────────────────────────────────────
 
 var (
 	cooccurrenceList    listFlags
@@ -97,8 +97,8 @@ var cooccurrenceCmd = &cobra.Command{
 		"--details=false drops the per-page breakdown and makes the response much\n" +
 		"smaller.\n\n" +
 		"Cost: 3 credits per request.",
-	Example: "  rakko co-occurrence ラッコ -n 30\n" +
-		"  rakko cooc ラッコ --details=false -f csv",
+	Example: "  rakkokeyword co-occurrence ラッコ -n 30\n" +
+		"  rakkokeyword cooc ラッコ --details=false -f csv",
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		body := rakko.Body{"keyword": args[0]}
@@ -129,7 +129,7 @@ func init() {
 		"siteCountTotal", "desc", "any positive integer (API default: all results)", nil)
 }
 
-// ── rakko metadata ───────────────────────────────────────────────────────────
+// ── rakkokeyword metadata ───────────────────────────────────────────────────────────
 
 var metadataCmd = &cobra.Command{
 	Use:   "metadata",
@@ -145,15 +145,15 @@ var (
 var metadataLocationsCmd = &cobra.Command{
 	Use:   "locations",
 	Short: "List region names for --location (free, no API key needed)",
-	Long: "The region names `rakko search-volume register --location` and\n" +
-		"`rakko search-rank register --location` accept.\n\n" +
+	Long: "The region names `rakkokeyword search-volume register --location` and\n" +
+		"`rakkokeyword search-rank register --location` accept.\n\n" +
 		"Unfiltered the list is country-level only. Give --location-name or\n" +
 		"--country-code and city-level regions appear too; those are written as\n" +
 		"\"City,Region,Country\" (e.g. Shibuya,Tokyo,Japan). Intermediate levels on\n" +
 		"their own — a prefecture with no city — are not supported.\n\n" +
 		"Cost: free. This endpoint needs no API key.",
-	Example: "  rakko metadata locations --country-code JP\n" +
-		"  rakko metadata locations --location-name Tokyo",
+	Example: "  rakkokeyword metadata locations --country-code JP\n" +
+		"  rakkokeyword metadata locations --location-name Tokyo",
 	Args: cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, _ []string) error {
 		q := queryValues()
@@ -174,8 +174,8 @@ var metadataLocationsCmd = &cobra.Command{
 var metadataLanguagesCmd = &cobra.Command{
 	Use:   "languages",
 	Short: "List language names for --language (free, no API key needed)",
-	Long: "The language names `rakko search-volume register --language` and\n" +
-		"`rakko search-rank register --language` accept. Use the value verbatim\n" +
+	Long: "The language names `rakkokeyword search-volume register --language` and\n" +
+		"`rakkokeyword search-rank register --language` accept. Use the value verbatim\n" +
 		"(e.g. Japanese).\n\n" +
 		"Cost: free. This endpoint needs no API key.",
 	Args: cobra.NoArgs,

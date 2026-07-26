@@ -30,11 +30,11 @@ var rawCmd = &cobra.Command{
 		"Authentication, retries, timeouts and output formatting work as they do\n" +
 		"everywhere else.\n\n" +
 		"It charges the same credits as the endpoint it calls; --dry-run still shows\n" +
-		"the request without sending it. The endpoint list is in `rakko llm` and at\n" +
+		"the request without sending it. The endpoint list is in `rakkokeyword llm` and at\n" +
 		"https://api.rakkokeyword.com/api-docs.json.",
-	Example: `  rakko raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'` + "\n" +
-		"  rakko raw GET /v1/metadata/locations --query countryCode=JP\n" +
-		"  rakko raw POST /v1/co-occurrence --data @body.json --items data.items -f csv",
+	Example: `  rakkokeyword raw POST /v1/suggest-keywords --data '{"keyword":"ラッコ","modes":["google"]}'` + "\n" +
+		"  rakkokeyword raw GET /v1/metadata/locations --query countryCode=JP\n" +
+		"  rakkokeyword raw POST /v1/co-occurrence --data @body.json --items data.items -f csv",
 	Args: cobra.ExactArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		method := strings.ToUpper(args[0])
@@ -59,7 +59,7 @@ var rawCmd = &cobra.Command{
 
 		return run(cmd, call{
 			req:     rakko.Request{Method: method, Path: path, Query: query, Body: body},
-			credits: "whatever this endpoint costs — see `rakko llm`",
+			credits: "whatever this endpoint costs — see `rakkokeyword llm`",
 			out:     output.Options{ItemsPath: rawItemsPath},
 		})
 	},

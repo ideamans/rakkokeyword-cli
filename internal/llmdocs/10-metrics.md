@@ -9,7 +9,7 @@ units and the freshness right is most of the work of using this data well.
 | `seoDifficulty` | how hard it is to rank | 1–100 | 1–33 low, 34–66 medium, 67–100 high. **Frequently `null`** — it is only measured on request in `search-volume --seo-difficulty` |
 | `cpc` | estimated cost per click | 0+ | **US dollars**, not yen |
 | `competition` | paid-search competition | 0–100 | 0–33 low, 34–66 medium, 67–100 high. This is an *advertising* signal, not an SEO one |
-| `firstSeenRange` | when the keyword first appeared in the rakko database | label | `last_7_days` … `over_1_year`. A recent value on a high-volume keyword suggests a trend |
+| `firstSeenRange` | when the keyword first appeared in the rakkokeyword database | label | `last_7_days` … `over_1_year`. A recent value on a high-volume keyword suggests a trend |
 | `relevance` | intent overlap with the source keyword (`ranking-keywords`) | 1–100 | High ⇒ one article can target both |
 | `importance` | how often an LSI/PAA entry recurred (`other-keywords`) | high/medium/low | Derived from the recursive crawl, not from search volume |
 
@@ -40,7 +40,7 @@ most common way to be confidently wrong with this API.
 | `estimatedTraffic` / `etv` | estimated monthly search visits |
 | `trafficValue` | estimated traffic × CPC, i.e. what the traffic would cost as ads, **in USD** |
 | `rankingKeywordCount` / `keywordCount` | how many keywords the page or site ranks for |
-| `pageCount` | indexed pages known to rakko |
+| `pageCount` | indexed pages known to rakkokeyword |
 | `duplicateRate` (`competitive`) | keyword overlap as a fraction in [0,1] — 0.42 is 42% |
 | `pagesWithTrafficRate` (`bulk-site-research`) | fraction of pages that get any traffic, in [0,1] |
 

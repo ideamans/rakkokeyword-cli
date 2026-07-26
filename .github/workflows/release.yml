@@ -26,9 +26,9 @@ jobs:
       - name: Verify the tag matches PluginVersion
         run: |
           tag="${GITHUB_REF_NAME#v}"
-          declared=$(grep -oE 'PluginVersion = "[^"]+"' cmd/rakko/main.go | cut -d'"' -f2)
+          declared=$(grep -oE 'PluginVersion = "[^"]+"' cmd/rakkokeyword/main.go | cut -d'"' -f2)
           if [ "$tag" != "$declared" ]; then
-            echo "::error::tag $GITHUB_REF_NAME disagrees with PluginVersion ($declared) in cmd/rakko/main.go"
+            echo "::error::tag $GITHUB_REF_NAME disagrees with PluginVersion ($declared) in cmd/rakkokeyword/main.go"
             exit 1
           fi
 
