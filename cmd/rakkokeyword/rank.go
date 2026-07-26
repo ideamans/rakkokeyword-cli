@@ -152,7 +152,7 @@ func init() {
 	f.StringArrayVar(&rankURLs, "url", nil, "URL or domain to look for in the results; repeat, up to 50")
 	f.StringVar(&rankURLFile, "urls-file", "", "File with one URL per line")
 	f.StringVar(&rankMatchType, "match-type", "", "How a result counts as a hit: url / forward_url / domain / sub_domain (API default: sub_domain)")
-	f.IntVar(&rankDepth, "depth", 0, "How deep to read the SERP: 30 / 40 / … / 100 (API default: 30)")
+	f.IntVar(&rankDepth, "depth", 0, "How deep to read the SERP: 30 / 40 / 50 / 60 / 70 / 80 / 90 / 100 (API default: 30)")
 	f.BoolVar(&rankWithVolume, "search-volume", false, "Also fetch search volume and SEO difficulty for every keyword (extra credits)")
 	f.BoolVar(&rankDedupe, "deduplicate", true, "Drop duplicate keywords before charging for them (API default: true)")
 	f.StringVar(&rankLocation, "location", "", "Region name for the SERP, from `rakkokeyword metadata locations` (API default: Japan)")

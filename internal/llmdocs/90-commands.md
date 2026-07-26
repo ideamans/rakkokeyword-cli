@@ -585,7 +585,7 @@ rakkokeyword search-rank register ラッコ カワウソ --url https://example.c
 | flag | type | default | description |
 | --- | --- | --- | --- |
 | `--deduplicate` | bool | `true` | Drop duplicate keywords before charging for them (API default: true) |
-| `--depth` | int | `0` | How deep to read the SERP: 30 / 40 / … / 100 (API default: 30) |
+| `--depth` | int | `0` | How deep to read the SERP: 30 / 40 / 50 / 60 / 70 / 80 / 90 / 100 (API default: 30) |
 | `--device` | string | — | Device to emulate: desktop / mobile (API default: desktop) |
 | `--filter` | stringArray | `[]` | Filter as path=value, repeatable. Accepted paths: keyword.includes=<word,word> keyword.notIncludes=<word,word> seoDifficulty.min=<int> seoDifficulty.max=<int> searchVolume.min=<int> searchVolume.max=<int> |
 | `--filter-json` | string | — | Filter object as raw JSON, merged over --filter (escape hatch for anything --filter cannot express) |
