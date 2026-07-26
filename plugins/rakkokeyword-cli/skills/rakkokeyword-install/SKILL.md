@@ -40,9 +40,8 @@ curl -fsSL -o /tmp/rakkokeyword.tar.gz \
 
 **The archive is named after the binary, not the repository** — `rakkokeyword`,
 with no `-cli` suffix: `rakkokeyword_<version-without-v>_<os>_<arch>.tar.gz`.
-Windows ships a `.zip`. Releases before v0.2.0 named the binary `rakko`; ignore
-them, they are the pre-rename builds. If the download 404s, list the actual
-assets on the release page rather than retrying variations.
+Windows ships a `.zip`. If the download 404s, list the actual assets on the
+release page rather than retrying variations.
 
 ```bash
 tar -xzf /tmp/rakkokeyword.tar.gz -C /tmp
