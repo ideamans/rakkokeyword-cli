@@ -17,10 +17,10 @@ func TestLLMReferenceRenders(t *testing.T) {
 		t.Fatalf("render markdown: %v", err)
 	}
 	for _, want := range []string{
-		"# rakkokeyword — reference for AI agents",
-		"# Metrics and how to read them",
-		"# JSON output schemas",
-		"# Limits, costs and traps",
+		"# rakkokeyword — AIエージェント向けリファレンス",
+		"# 指標とその読み方",
+		"# JSON 出力スキーマ",
+		"# 制限・コスト・落とし穴",
 		"# Command catalog",
 		"RAKKOKEYWORD_API_KEY",
 	} {

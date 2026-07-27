@@ -1,84 +1,82 @@
-# Metrics and how to read them
+# 指標とその読み方
 
-Every keyword-shaped response carries the same `metrics` block. Getting the
-units and the freshness right is most of the work of using this data well.
+キーワード系のレスポンスはすべて同じ `metrics` ブロックを持つ。
+単位と鮮度を正しく押さえることが、このデータをうまく使うことのほとんどを占める。
 
-| Field | Meaning | Range | Notes |
+| フィールド | 意味 | 値域 | 注意 |
 | --- | --- | --- | --- |
-| `searchVolume` | monthly searches, averaged over the aggregation window | 0+ | `null` when unknown. Google Ads rounds these into buckets (10, 90, 480, 1600, 18100, 90500 …); treat them as orders of magnitude, not measurements |
-| `seoDifficulty` | how hard it is to rank | 1–100 | 1–33 low, 34–66 medium, 67–100 high. **Frequently `null`** — it is only measured on request in `search-volume --seo-difficulty` |
-| `cpc` | estimated cost per click | 0+ | **US dollars**, not yen |
-| `competition` | paid-search competition | 0–100 | 0–33 low, 34–66 medium, 67–100 high. This is an *advertising* signal, not an SEO one |
-| `firstSeenRange` | when the keyword first appeared in the rakkokeyword database | label | `last_7_days` … `over_1_year`. A recent value on a high-volume keyword suggests a trend |
-| `relevance` | intent overlap with the source keyword (`ranking-keywords`) | 1–100 | High ⇒ one article can target both |
-| `importance` | how often an LSI/PAA entry recurred (`other-keywords`) | high/medium/low | Derived from the recursive crawl, not from search volume |
+| `searchVolume` | 集計期間で平均した月間検索数 | 0以上 | 不明なら `null`。Google Ads がバケット値に丸めている（10、90、480、1600、18100、90500…）ので、実測値ではなく桁として扱う |
+| `seoDifficulty` | 上位表示の難しさ | 1〜100 | 1〜33が低、34〜66が中、67〜100が高。**しばしば `null`** — `search-volume --seo-difficulty` で明示的に要求したときだけ計測される |
+| `cpc` | 推定クリック単価 | 0以上 | **米ドル**。円ではない |
+| `competition` | リスティング広告の競合度 | 0〜100 | 0〜33が低、34〜66が中、67〜100が高。これは*広告*のシグナルであってSEOのものではない |
+| `firstSeenRange` | そのキーワードがラッコキーワードのDBに最初に現れた時期 | ラベル | `last_7_days` 〜 `over_1_year`。検索数が多いのに新しければ、トレンドの可能性がある |
+| `relevance` | 元キーワードとの検索意図の重なり（`ranking-keywords`） | 1〜100 | 高ければ1記事で両方を狙える |
+| `importance` | LSI/PAA 項目が繰り返し現れた度合い（`other-keywords`） | high/medium/low | 再帰クロールから導出したもので、検索ボリューム由来ではない |
 
-## Freshness: which commands measure, which recall
+## 鮮度: 計測するコマンドと、思い出すだけのコマンド
 
-Only `search-volume` measures. Every other command attaches whatever metrics
-were last cached, and the API documentation says so explicitly for each one.
+**計測するのは `search-volume` だけ。** 他のコマンドは最後にキャッシュされた指標を
+そのまま付けて返す。API のドキュメントにもコマンドごとに明記されている。
 
 ```
 suggest-keywords / related-keywords / other-keywords / ranking-keywords
 influx-keywords / influx-pages / content-search / site-search
-        └── metrics may be stale, seoDifficulty usually null
+        └── 指標は古い可能性がある。seoDifficulty はたいてい null
                         │
                         ▼
-        search-volume register --wait   ← current volume, CPC, competition,
-                                          trends, and (opt-in) SEO difficulty
-        search-rank register --wait     ← current Google positions
+        search-volume register --wait   ← 現在の検索数・CPC・競合度・傾向、
+                                          （オプトインで）SEO難易度
+        search-rank register --wait     ← 現在の Google 順位
 ```
 
-So the honest workflow is: discover cheaply and broadly, then re-measure the
-shortlist. Quoting a difficulty score straight out of `suggest-keywords` is the
-most common way to be confidently wrong with this API.
+したがって誠実な進め方は、**安く広く発見してから、絞り込んだ候補を測り直す**こと。
+`suggest-keywords` の難易度スコアをそのまま引用するのが、このAPIで自信満々に
+間違える最も多いパターン。
 
-## Traffic metrics
+## トラフィック指標
 
-| Field | Meaning |
+| フィールド | 意味 |
 | --- | --- |
-| `estimatedTraffic` / `etv` | estimated monthly search visits |
-| `trafficValue` | estimated traffic × CPC, i.e. what the traffic would cost as ads, **in USD** |
-| `rankingKeywordCount` / `keywordCount` | how many keywords the page or site ranks for |
-| `pageCount` | indexed pages known to rakkokeyword |
-| `duplicateRate` (`competitive`) | keyword overlap as a fraction in [0,1] — 0.42 is 42% |
-| `pagesWithTrafficRate` (`bulk-site-research`) | fraction of pages that get any traffic, in [0,1] |
+| `estimatedTraffic` / `etv` | 推定月間検索流入数 |
+| `trafficValue` | 推定流入 × CPC。その流入を広告で買った場合の費用に相当。**USD** |
+| `rankingKeywordCount` / `keywordCount` | そのページ／サイトが順位を持つキーワード数 |
+| `pageCount` | ラッコキーワードが把握しているインデックス済みページ数 |
+| `duplicateRate`（`competitive`） | キーワードの重複率。[0,1] の小数 — 0.42 は 42% |
+| `pagesWithTrafficRate`（`bulk-site-research`） | 流入のあるページの割合。[0,1] |
 
-These are estimates derived from rank × click-through model, not analytics.
-Compare sites against each other rather than treating a number as a forecast.
+いずれも順位×クリック率モデルからの推定値であって、アクセス解析の実測ではない。
+1つの数値を予測として扱うのではなく、サイト同士を相対比較するために使う。
 
-## bulk-site-research indices
+## bulk-site-research の指数
 
-`histories[]` is normalised: `etvIndex`, `keywordCountIndex` and
-`pageCountIndex` are 0–100 with the series maximum at 100, computed
-independently per series and per site. They show shape, not size.
+`histories[]` は正規化されている。`etvIndex`・`keywordCountIndex`・`pageCountIndex`
+は 0〜100 で、系列の最大値が100になる。系列ごと・サイトごとに独立して計算される。
+つまり**規模ではなく形**を表す。
 
-Absolute current values live in `metrics` (`estimatedTraffic`, `keywordCount`,
-`pageCount`). Never compare an index across sites as if it were a volume, and
-never multiply an index by anything.
+現在の絶対値は `metrics`（`estimatedTraffic`、`keywordCount`、`pageCount`）にある。
+指数をサイト間でボリュームのように比較してはいけないし、何かを掛けてもいけない。
 
-## Rank data
+## 順位データ
 
-`search-rank` results carry a `rankings` array with one entry per target URL:
+`search-rank` の結果には、対象URLごとに1エントリの `rankings` 配列が入る:
 
-- `position` — `null` when the URL did not appear within `--depth`. That is
-  "not in the top N", which is different from "rank 0" and different from
-  "no data".
-- `rankedUrl` — the URL that actually ranked, which may not be the one asked
-  about (a different page of the same domain, with `sub_domain` matching).
-- `estimatedTraffic` — modelled from position and volume.
+- `position` — `--depth` の範囲内にURLが現れなければ `null`。これは「上位N件に入っていない」
+  という意味で、「0位」とも「データ無し」とも違う。
+- `rankedUrl` — 実際に順位を取ったURL。問い合わせたURLとは限らない
+  （`sub_domain` マッチングにより、同一ドメインの別ページのことがある）。
+- `estimatedTraffic` — 順位と検索数からのモデル値。
 
-`influx-keywords` positions come from the crawl cache instead, so they can lag.
-When the user asks "where do we rank *now*", use `search-rank`.
+`influx-keywords` の順位はクロールキャッシュ由来なので遅れることがある。
+ユーザーが「*今*何位か」を訊いているときは `search-rank` を使う。
 
-## suggestClass (suggest-keywords)
+## suggestClass（suggest-keywords）
 
-| Label | Meaning |
+| ラベル | 意味 |
 | --- | --- |
-| `＋` | a direct suggestion |
-| `＋＋` | a suggestion of a suggestion |
-| `＋α` | suggestions found by appending あいうえお / abc / 123 to the keyword |
-| `＋＋＋` | expanded further from `＋＋` or `＋α` |
+| `＋` | 直接のサジェスト |
+| `＋＋` | サジェストのサジェスト |
+| `＋α` | キーワードに あいうえお / abc / 123 を付けて得たサジェスト |
+| `＋＋＋` | `＋＋` や `＋α` からさらに展開したもの |
 
-`＋` entries are the closest to what users actually type; the rest come from
-`--increase-keyword`-style expansion and get progressively more speculative.
+`＋` が実際にユーザーが打っている語に最も近い。それ以外は
+`--increase-keyword` 系の展開によるもので、後ろにいくほど推測の度合いが強くなる。

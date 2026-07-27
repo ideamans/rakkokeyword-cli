@@ -57,7 +57,7 @@ Three cases cause most of the waste:
 orientation and pull the others on demand:
 
 ```bash
-rakkokeyword llm | sed -n '1,/^# Metrics/p'                                             # rules, auth, command map
+rakkokeyword llm | sed -n '1,/^# 指標/p'                                                # rules, auth, command map
 rakkokeyword llm --format json | jq -r '.[] | select(.file=="20-schemas.md") | .body'   # response shapes
 rakkokeyword suggest-keywords --help                                                    # one command's flags and cost
 ```
