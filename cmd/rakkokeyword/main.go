@@ -24,7 +24,7 @@ import (
 // recorded in plugins/rakkokeyword-cli/.claude-plugin/plugin.json — a test
 // enforces that the two agree, and the release workflow enforces that both
 // agree with the git tag. Bump it in the same commit as the tag.
-const PluginVersion = "0.2.0"
+const PluginVersion = "0.3.0"
 
 func main() {
 	// --llm anywhere on the command line prints the reference and exits,
