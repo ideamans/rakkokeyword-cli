@@ -20,7 +20,7 @@ If that resolves, **use it and stop here** — do not check for a newer release,
 it costs an API call and the user did not ask for an upgrade.
 
 Two things invalidate the hit. `rakkokeyword` is a short name, so the first line of
-`rakkokeyword llm` must read `# rakkokeyword — reference for AI agents`; if something else
+`rakkokeyword llm` must read `# rakkokeyword — AIエージェント向けリファレンス`; if something else
 owns the name, say so and use an explicit path rather than shadowing theirs. And
 if `llm` is not a known command at all, the binary predates the embedded
 reference — continue to route 2 to upgrade it.

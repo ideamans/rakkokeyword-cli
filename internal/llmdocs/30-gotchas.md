@@ -1,108 +1,101 @@
-# Limits, costs and traps
+# 制限・コスト・落とし穴
 
-## Credits
+## クレジット
 
-| Command | Cost |
+| コマンド | コスト |
 | --- | --- |
-| `suggest-keywords`, `related-keywords`, `site-search` | 1.5 per request |
-| `question-search`, `headline`, `co-occurrence` | 3 per request |
-| `ranking-keywords`, `influx-keywords`, `influx-pages`, `competitive`, `content-search` | 4.5 per request |
-| `other-keywords` | **22.5 per request** |
-| `bulk-site-research` | 0.45 per URL, minimum 4.5 |
-| `search-volume register` | 0.03 per keyword, **+0.75 per keyword** with `--seo-difficulty`, minimum 15 per request |
-| `search-rank register` | 0.9 per keyword for ranks 1–30, +0.3 per keyword per extra 10 ranks of `--depth` |
-| `metadata`, `histories`, `status`, `results` | free |
+| `suggest-keywords`, `related-keywords`, `site-search` | 1リクエスト 1.5 |
+| `question-search`, `headline`, `co-occurrence` | 1リクエスト 3 |
+| `ranking-keywords`, `influx-keywords`, `influx-pages`, `competitive`, `content-search` | 1リクエスト 4.5 |
+| `other-keywords` | **1リクエスト 22.5** |
+| `bulk-site-research` | 1URL 0.45、最低 4.5 |
+| `search-volume register` | 1キーワード 0.03、`--seo-difficulty` 付きは **1キーワードあたり +0.75**、1リクエスト最低 15 |
+| `search-rank register` | 1〜30位は1キーワード 0.9、`--depth` を10位増やすごとに1キーワードあたり +0.3 |
+| `metadata`, `histories`, `status`, `results` | 無料 |
 
-Consequences worth acting on:
+行動を変えるべき帰結:
 
-- **Batch the batch commands.** A `search-volume register` with one keyword and
-  one with 500 both cost at least 15 credits. Collect the shortlist first.
-- **`--seo-difficulty` is 25× the price** and can take an hour. Leave it off
-  unless difficulty is the question.
-- **`other-keywords` costs as much as fifteen `suggest-keywords` calls.** Do not
-  loop it over a keyword list.
-- **`--dry-run` costs nothing** and prints the exact request plus its price.
-- Consumed credits are printed to stderr after every call, and are in
-  `meta.consumedCredit` in `-f json`.
+- **バッチ系はまとめて投げる。** `search-volume register` は1キーワードでも
+  500キーワードでも最低15クレジットかかる。先に候補を集めきること。
+- **`--seo-difficulty` は単価が25倍**になり、1時間かかることもある。
+  難易度そのものが問いでない限り付けない。
+- **`other-keywords` 1回は `suggest-keywords` 15回分。** キーワードのリストに対して
+  ループで回してはいけない。
+- **`--dry-run` は無料**で、送信するリクエストとその価格をそのまま表示する。
+- 消費クレジットは毎回 stderr に出力され、`-f json` では `meta.consumedCredit` に入る。
 
-## Hard limits
+## ハードリミット
 
-| Limit | Where |
+| 制限 | 対象 |
 | --- | --- |
-| 20 targets | `influx-keywords`, `influx-pages` |
-| 50 URLs | `search-rank register --url` |
-| 100 URLs | `bulk-site-research` (STANDARD plan or above) |
-| 100 records | `site-search`, and `histories` per page |
-| 200 records | `question-search` |
-| 5,000 records | `ranking-keywords`, `content-search` |
-| 10,000 records | `influx-keywords`, `influx-pages` |
-| 25,000 records | `related-keywords` |
-| 50,000 keywords | `search-volume register` |
+| 20ターゲット | `influx-keywords`, `influx-pages` |
+| 50URL | `search-rank register --url` |
+| 100URL | `bulk-site-research`（STANDARD プラン以上） |
+| 100レコード | `site-search`、および `histories` の1ページあたり |
+| 200レコード | `question-search` |
+| 5,000レコード | `ranking-keywords`, `content-search` |
+| 10,000レコード | `influx-keywords`, `influx-pages` |
+| 25,000レコード | `related-keywords` |
+| 50,000キーワード | `search-volume register` |
 | offset + limit ≤ 50,000 | `histories` |
 
-The CLI rejects the target/URL overruns locally; the rest come back as HTTP 400.
+ターゲット数・URL数の超過は CLI がローカルで弾く。それ以外は HTTP 400 で返る。
 
-## Asynchronous jobs
+## 非同期ジョブ
 
 ```
-register  →  requestId  →  status (poll)  →  results
+register  →  requestId  →  status（ポーリング）  →  results
 ```
 
-- Poll no faster than every 30 seconds. `--wait` defaults to that.
-- Typical `search-volume` completion is ~10 seconds; with `--seo-difficulty` up
-  to 60 minutes. `search-rank` is minutes for ≤10 keywords, up to an hour
-  beyond. A busy queue can mean hours for either.
-- `--wait-timeout` (default 1 hour) only stops the CLI waiting. The job keeps
-  running: recover it with `rakkokeyword search-volume histories` and fetch the
-  results by requestId whenever it finishes.
-- Fetching results before completion returns partial data without an error.
-  Check `isCompleted` first.
-- `isCompleted` ignores `noiseReduction` for search-volume; for search-rank a
-  `failed` or `integration_failed` metrics stage keeps it false even though the
-  SERP ranks may be there.
+- ポーリング間隔は30秒より短くしない。`--wait` の既定値がそれ。
+- `search-volume` の完了は通常10秒程度、`--seo-difficulty` 付きだと最大60分。
+  `search-rank` は10キーワード以下なら数分、それを超えると最大1時間。
+  キューが混んでいればどちらも数時間かかりうる。
+- `--wait-timeout`（既定1時間）は CLI が待つのをやめるだけで、ジョブは動き続ける。
+  `rakkokeyword search-volume histories` で拾い直し、完了後に requestId で結果を取得する。
+- 完了前に results を取ると、エラーにならず部分的なデータが返る。
+  先に `isCompleted` を確認すること。
+- `isCompleted` は search-volume では `noiseReduction` を無視する。search-rank では
+  metrics 段階が `failed` / `integration_failed` だと、SERP順位が取れていても false のままになる。
 
-## Data traps
+## データの落とし穴
 
-- **`null` ≠ 0.** Null `seoDifficulty` means not measured. Null `position` means
-  not found within `--depth`.
-- **`cpc` and `trafficValue` are USD**, everything else about the Japanese
-  market notwithstanding.
-- **Search volumes are Google Ads buckets** (90, 480, 1600, 18100, 90500 …).
-  Two keywords sharing a volume are in the same band, not equally popular.
-- **`duplicateRate` and `pagesWithTrafficRate` are fractions in [0,1].**
-  Multiply by 100 before writing a percentage.
-- **`bulk-site-research` histories are 0–100 indices**, not traffic.
-- **`totalCount` vs `returnedCount`.** A limit silently truncates; compare the
-  two before saying "the site ranks for 100 keywords".
-- **`site-search` with a content filter cannot page past 100.** The API picks
-  the top 100 sites *first* and filters afterwards.
-- **`ranking-keywords --search-top/--search-range` change what the result
-  means.** Wide ranges surface loosely related keywords by design.
-- **`search-rank` matching.** `sub_domain` (the default) counts any subdomain;
-  check `rankedUrl` to see which page actually ranked.
+- **`null` ≠ 0。** `seoDifficulty` の null は「未計測」。`position` の null は
+  「`--depth` の範囲内に見つからなかった」。
+- **`cpc` と `trafficValue` は USD。** 日本市場向けのデータであっても例外ではない。
+- **検索ボリュームは Google Ads のバケット値**（90、480、1600、18100、90500…）。
+  同じ値の2語は同じ帯にいるというだけで、人気が等しいわけではない。
+- **`duplicateRate` と `pagesWithTrafficRate` は [0,1] の小数。**
+  パーセント表記にするなら100倍する。
+- **`bulk-site-research` の histories は 0〜100 の指数**であって、トラフィック量ではない。
+- **`totalCount` と `returnedCount` を比べる。** limit は黙って切り詰めるので、
+  「このサイトは100キーワードで順位を取っている」と言う前に必ず突き合わせる。
+- **`site-search` はコンテンツフィルタ併用時、100件を超えてページングできない。**
+  API が先に上位100サイトを選び、その後でフィルタするため。
+- **`ranking-keywords --search-top` / `--search-range` は結果の意味を変える。**
+  範囲を広く取ると、関連の薄いキーワードが出るのは仕様。
+- **`search-rank` のマッチング。** 既定の `sub_domain` はあらゆるサブドメインを数える。
+  実際にどのページが順位を取ったかは `rankedUrl` を見る。
 
-## Output traps
+## 出力の落とし穴
 
-- Table output truncates cells to 44 characters (`--wide` disables it) and shows
-  a curated column subset. Never scrape it — use `-f json`, `-f jsonl` or
-  `-f csv`.
-- CSV columns are dotted paths in the API's own field order; nested arrays of
-  objects (`headlines`, `rankings`, `pageDetails`, `histories`) become one
-  column of compact JSON.
-- Credits, progress and API warnings go to stderr. Redirecting only stdout keeps
-  the data clean.
-- `--fields` accepts any dotted path from the schemas chapter and applies to
-  both table and CSV.
+- table 出力はセルを44文字で切り詰め（`--wide` で無効化）、列も厳選した一部だけを出す。
+  スクレイピングしてはいけない。`-f json` / `-f jsonl` / `-f csv` を使う。
+- csv の列は API 自身のフィールド順のドット記法パス。オブジェクトの入れ子配列
+  （`headlines`、`rankings`、`pageDetails`、`histories`）は、コンパクトなJSON1列になる。
+- クレジット・進捗・API の警告は stderr に出る。stdout だけをリダイレクトすれば
+  データはきれいなまま。
+- `--fields` はスキーマ章にあるドット記法パスをすべて受け付け、table と csv の両方に効く。
 
-## Regions and languages
+## 地域と言語
 
-`--location` and `--language` take names, not codes: `Japan`, `Japanese`. City
-level works as `City,Region,Country` (`Shibuya,Tokyo,Japan`); a prefecture on
-its own does not. Confirm with `rakkokeyword metadata locations --country-code JP`,
-which is free and needs no API key.
+`--location` と `--language` はコードではなく名前を取る（`Japan`、`Japanese`）。
+市区町村レベルは `City,Region,Country` の形で指定する（`Shibuya,Tokyo,Japan`）。
+都道府県単独では動かない。`rakkokeyword metadata locations --country-code JP` で
+確認できる（無料・APIキー不要）。
 
-## When a parameter is missing from the CLI
+## CLI にパラメータが無いとき
 
-`rakkokeyword raw <METHOD> <path> --data '{…}'` sends anything to any endpoint with the
-same auth, retries and formatting. The API's own spec is at
-<https://api.rakkokeyword.com/api-docs.json>.
+`rakkokeyword raw <METHOD> <path> --data '{…}'` が、同じ認証・リトライ・整形のまま
+任意のエンドポイントへ任意の内容を送る。API の仕様は
+<https://api.rakkokeyword.com/api-docs.json>。

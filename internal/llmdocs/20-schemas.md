@@ -1,10 +1,10 @@
-# JSON output schemas
+# JSON 出力スキーマ
 
-`-f json` prints the API response unchanged, so these are the API's own shapes.
-`-f jsonl` prints the elements of the array marked **items path** below, one per
-line. `-f csv` prints those same elements with dotted column names.
+`-f json` は API のレスポンスをそのまま出力するので、ここに載せているのは
+API 自身の構造そのもの。`-f jsonl` は下記の **items パス** が指す配列の要素を
+1行1件で出力する。`-f csv` は同じ要素をドット記法の列名で出力する。
 
-## The envelope
+## エンベロープ
 
 ```json
 {
@@ -15,11 +15,11 @@ line. `-f csv` prints those same elements with dotted column names.
 }
 ```
 
-`data.summary.totalCount` is how many records matched; `returnedCount` is how
-many came back under the limit. When they differ, the result is truncated —
-raise `-n` or narrow the filter rather than reporting the subset as the whole.
+`data.summary.totalCount` は条件に一致した件数、`returnedCount` は limit の範囲で
+実際に返ってきた件数。両者が食い違っていれば結果は切り詰められている。
+一部を全体として報告せず、`-n` を上げるかフィルタを絞ること。
 
-## suggest-keywords — items path `data.items`
+## suggest-keywords — items パス `data.items`
 
 ```json
 {
@@ -31,17 +31,16 @@ raise `-n` or narrow the filter rather than reporting the subset as the whole.
 }
 ```
 
-`data.query.suggestEngines` lists the engines that were queried, always as an
-array even for one engine.
+`data.query.suggestEngines` は問い合わせた検索エンジンの一覧。1つでも必ず配列。
 
-## related-keywords — items path `data.items`
+## related-keywords — items パス `data.items`
 
 ```json
 { "keyword": "ラッコ グッズ", "metrics": { "seoDifficulty": null, "searchVolume": 1600,
                                           "cpc": 0.1, "competition": 30, "firstSeenRange": "over_1_year" } }
 ```
 
-## other-keywords — items path `data.items`
+## other-keywords — items パス `data.items`
 
 ```json
 { "type": "lsi", "keyword": "ラッコ 生態", "importance": "high",
@@ -50,17 +49,17 @@ array even for one engine.
   "sourceKeyword": "ラッコ" }
 ```
 
-One array holds both kinds. Branch on `type`: `lsi` records have `keyword` and
-`metrics`, `paa` records have `question`. `data.summary` has `lsiCount` and
-`paaCount` instead of `totalCount`.
+1つの配列に2種類が混在する。`type` で分岐すること。`lsi` は `keyword` と `metrics` を、
+`paa` は `question` を持つ。`data.summary` には `totalCount` ではなく
+`lsiCount` と `paaCount` が入る。
 
-## question-search — items path `data.items`
+## question-search — items パス `data.items`
 
 ```json
 { "question": "ラッコは何を食べますか？" }
 ```
 
-## ranking-keywords — items path `data.items`
+## ranking-keywords — items パス `data.items`
 
 ```json
 { "keyword": "らっこ 生態", "wordCount": 2,
@@ -68,7 +67,7 @@ One array holds both kinds. Branch on `type`: `lsi` records have `keyword` and
                "competition": 4, "relevance": 65 } }
 ```
 
-## search-volume results — items path `data.items`
+## search-volume results — items パス `data.items`
 
 ```json
 {
@@ -84,27 +83,27 @@ One array holds both kinds. Branch on `type`: `lsi` records have `keyword` and
 }
 ```
 
-`changeRate` values are fractions: 0.12 is +12%. `yoy2y` and `yoy3y` need
-`--aggregation-period-months` 36 and 48 respectively, and are null otherwise.
-`monthlySearchVolume` is an object keyed `YYYY-MM`, so in CSV it lands in one
-column as compact JSON — use `-f json` for trend work.
+`changeRate` は小数。0.12 は +12% を意味する。`yoy2y` と `yoy3y` はそれぞれ
+`--aggregation-period-months` に 36 と 48 が必要で、無ければ null。
+`monthlySearchVolume` は `YYYY-MM` をキーにしたオブジェクトなので、csv では
+コンパクトなJSONとして1列に収まる。傾向分析には `-f json` を使う。
 
-`data.query` echoes `requestId`, `location`, `language` and
-`aggregationPeriodMonths`.
+`data.query` には `requestId`・`location`・`language`・`aggregationPeriodMonths`
+がそのまま返る。
 
-## search-volume status / search-rank status — no items path
+## search-volume status / search-rank status — items パスなし
 
 ```json
 { "isCompleted": false,
   "statuses": { "searchVolume": "processing", "seoDifficulty": "skip", "noiseReduction": "unprocessed" } }
 ```
 
-`isCompleted` ignores `noiseReduction`; it can be true while noise reduction is
-still running. For search-rank the statuses are `serp` and
-`searchVolumeAndSeoDifficulty` (the latter absent when the option was off, and
-`failed` / `integration_failed` keep `isCompleted` false).
+`isCompleted` は `noiseReduction` を無視するため、ノイズ除去が動いている最中でも
+true になりうる。search-rank のステータスは `serp` と
+`searchVolumeAndSeoDifficulty`（後者はオプション未指定なら存在しない。
+`failed` / `integration_failed` の間は `isCompleted` が false のまま）。
 
-## search-volume / search-rank histories — items path `data.items`
+## search-volume / search-rank histories — items パス `data.items`
 
 ```json
 { "requestId": 1234567, "createdAt": "2026-07-25T04:00:00.000Z", "completedAt": null,
@@ -113,10 +112,10 @@ still running. For search-rank the statuses are `serp` and
   "aggregationPeriodMonths": 12, "dataCompletion": true }
 ```
 
-`requestId` is a **number** for search-volume and a **ULID string** for
-search-rank. Sorted by `createdAt` descending, always.
+`requestId` は search-volume では**数値**、search-rank では **ULID文字列**。
+並び順は常に `createdAt` の降順。
 
-## search-rank results — items path `data.items`
+## search-rank results — items パス `data.items`
 
 ```json
 {
@@ -130,11 +129,11 @@ search-rank. Sorted by `createdAt` descending, always.
 }
 ```
 
-`data.summary.targets[]` carries per-target totals and a
-`rankingPositionDistribution` object (`1-3`, `4-10`, …, `101+`) when
-`--with-aggregation` is set; without it `estimatedTraffic` there is 0.
+`data.summary.targets[]` にはターゲットごとの合計と、`--with-aggregation` 指定時に
+`rankingPositionDistribution` オブジェクト（`1-3`、`4-10`、…、`101+`）が入る。
+未指定の場合そこの `estimatedTraffic` は 0 になる。
 
-## influx-keywords — items path `data.items`
+## influx-keywords — items パス `data.items`
 
 ```json
 { "target": "https://example.com/", "keyword": "ラッコ 生態",
@@ -142,9 +141,9 @@ search-rank. Sorted by `createdAt` descending, always.
   "ranking": { "position": 3, "estimatedTraffic": 180, "url": "https://example.com/otter" } }
 ```
 
-`data.summary` adds `estimatedTraffic` and `keywordCount` for the whole target.
+`data.summary` にはターゲット全体の `estimatedTraffic` と `keywordCount` が加わる。
 
-## influx-pages — items path `data.items`
+## influx-pages — items パス `data.items`
 
 ```json
 { "target": "https://example.com/",
@@ -154,7 +153,7 @@ search-rank. Sorted by `createdAt` descending, always.
                   "metrics": { "seoDifficulty": 30, "searchVolume": 720 } } }
 ```
 
-## competitive — items path `data.items`
+## competitive — items パス `data.items`
 
 ```json
 { "site": { "domain": "example.com", "title": "Example" },
@@ -163,7 +162,7 @@ search-rank. Sorted by `createdAt` descending, always.
                "competitorUniqueKeywordCount": 7580, "targetUniqueKeywordCount": 1200 } }
 ```
 
-## bulk-site-research — items path `data.items`
+## bulk-site-research — items パス `data.items`
 
 ```json
 { "site": { "target": "*.example.com/*" },
@@ -179,11 +178,10 @@ search-rank. Sorted by `createdAt` descending, always.
                                       "1001-10000": 18, "10001+": 2, "1+": 210, "100+": 60, "1000+": 20 } } }
 ```
 
-`items` is the same length and order as the `urls` given. The
-`rankingPosition` and `pageTraffic` buckets overlap deliberately (`1-3` is also
-inside `1-10`) — do not sum them.
+`items` の件数と並び順は、渡した `urls` と同じ。`rankingPosition` と `pageTraffic`
+のバケットは意図的に重複している（`1-3` は `1-10` にも含まれる）ので、合算してはいけない。
 
-## content-search — items path `data.items`
+## content-search — items パス `data.items`
 
 ```json
 { "page": { "domain": "example.com", "url": "https://example.com/otter",
@@ -193,7 +191,7 @@ inside `1-10`) — do not sum them.
                   "metrics": { "seoDifficulty": 30, "searchVolume": 720 } } }
 ```
 
-## site-search — items path `data.items`
+## site-search — items パス `data.items`
 
 ```json
 { "no": 1,
@@ -203,10 +201,10 @@ inside `1-10`) — do not sum them.
   "relatedContent": { "estimatedTraffic": 900, "relevanceScore": 62 } }
 ```
 
-`relatedContent` is `null` unless a content filter (`filter.keyword.includes`)
-was given.
+`relatedContent` は、コンテンツフィルタ（`filter.keyword.includes`）を指定しない限り
+`null`。
 
-## headline — items path `data.items`
+## headline — items パス `data.items`
 
 ```json
 { "page": { "url": "https://example.com/otter", "title": "…", "description": "…" },
@@ -214,11 +212,11 @@ was given.
   "headlines": [ { "level": "h2", "text": "ラッコの生態" } ] }
 ```
 
-`headlines` is an array of objects, so it appears as compact JSON in CSV and
-table output. `data.summary` adds `averageHeadlineCount`, `averageWordCount`,
-`minWordCount` and `maxWordCount`.
+`headlines` はオブジェクトの配列なので、csv と table ではコンパクトなJSONとして現れる。
+`data.summary` には `averageHeadlineCount`・`averageWordCount`・`minWordCount`・
+`maxWordCount` が加わる。
 
-## co-occurrence — items path `data.items`
+## co-occurrence — items パス `data.items`
 
 ```json
 { "word": "生態",
@@ -229,9 +227,9 @@ table output. `data.summary` adds `averageHeadlineCount`, `averageWordCount`,
                      "pageCount": 1, "pageCountInHeadline": 1 } ] }
 ```
 
-`pageDetails` is omitted with `--details=false`.
+`pageDetails` は `--details=false` で省かれる。
 
-## metadata — items paths `data.locations` / `data.languages`
+## metadata — items パス `data.locations` / `data.languages`
 
 ```json
 { "name": "Shibuya,Tokyo,Japan", "countryIsoCode": "JP" }
